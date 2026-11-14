@@ -939,7 +939,7 @@ function pedirRolagem(info){
     $('pedDado').value=String(info.faces);$('pedDif').value=String(info.dif);
     $('pedSem').style.display=info.doJogador?'none':'inline-block';
     $('pedido').classList.add('on');
-    if(ONLINE&&info.doJogador)FB.salvarSala(SALA,{evento:{id:Date.now(),aguardando:true,quem:info.atac.nome+(h?' · '+h.nome:'')}}).catch(()=>{});
+    if(ONLINE&&info.doJogador)FB.salvarSala(SALA,{evento:evt({tipo:'aguardando',aguardando:true,quem:info.atac.nome+(h?' · '+h.nome:'')})}).catch(()=>{});
   });
 }
 function decidirPedido(tipo){
@@ -968,7 +968,7 @@ function aguardarJogador(info,dec){
     aguardaRolar={id,uid:info.uid,res};
     $('aguardoTxt').innerHTML=`⏳ Aguardando <b>${esc(info.atac.nome)}</b> rolar o dado (d${dec.faces} · dificuldade ${dec.dif})`;
     $('aguardo').classList.add('on');
-    FB.salvarSala(SALA,{evento:{id,aguardando:true,convite:true,uid:info.uid,quem,faces:dec.faces,dif:dec.dif}}).catch(()=>{});
+    FB.salvarSala(SALA,{evento:evt({id,tipo:'convite',aguardando:true,convite:true,uid:info.uid,quem,faces:dec.faces,dif:dec.dif})}).catch(()=>{});
   });
 }
 function resolverRolar(r){
@@ -986,7 +986,7 @@ async function rolarDado(atac,h,dec,apoio){
   const dd=dec||{},quem=atac.nome+(h?' · '+h.nome:'');
   if(dd.tipo==='sem'){
     const ban=apoio?(h&&h.cura?['💚 CURA!','#7dffa8']:['🛡️ '+h.nome.toUpperCase(),'#7fe8ff']):['⚔️ ACERTOU!','#7dff7d'];
-    if(ONLINE&&PAPEL==='mestre')FB.salvarSala(SALA,{evento:{id:Date.now(),semDado:true,banner:ban[0],cor:ban[1],som:apoio?(h.cura?'cura':'buff'):'ataque'}}).catch(()=>{});
+    if(ONLINE&&PAPEL==='mestre')FB.salvarSala(SALA,{evento:evt({tipo:'semdado',semDado:true,banner:ban[0],cor:ban[1],som:apoio?(h.cura?'cura':'buff'):'ataque'})}).catch(()=>{});
     return {sem:true,r:0,faces:0,rolo:0,ef:0,dif:0,falha:false,crit:false,res:'acerto',quem};
   }
   const faces=dd.faces||(estado.rolagem||{}).faces||20,dif=dd.dif??((estado.rolagem||{}).dif??10);
@@ -995,7 +995,7 @@ async function rolarDado(atac,h,dec,apoio){
   const res=falha?'falha':crit?'crit':ef>=dif?'acerto':'erro';
   if(ONLINE&&PAPEL==='mestre'){
     const A={falha:['💀 FALHA CRÍTICA!','#ff5555'],crit:['⭐ CRÍTICO! ⭐','#ffd36b'],acerto:apoio?(h.cura?['💚 CURA!','#7dffa8']:['🛡️ FUNCIONOU!','#7fe8ff']):['⚔️ ACERTOU!','#7dff7d'],erro:['💨 '+(apoio?'FALHOU...':'ERROU...'),'#cbb8ff']}[res];
-    FB.salvarSala(SALA,{evento:{id:Date.now(),r,faces,dif,cls,res,banner:A[0],cor:A[1],quem,apoio:!!apoio,som:apoio&&h.cura?'cura':'buff'}}).catch(()=>{});
+    FB.salvarSala(SALA,{evento:evt({tipo:'dado',r,faces,dif,cls,res,banner:A[0],cor:A[1],quem,apoio:!!apoio,som:apoio&&h.cura?'cura':'buff'})}).catch(()=>{});
   }
   await rolar3D(r,faces,quem,dif);
   $('d20').className=cls;
@@ -1437,6 +1437,7 @@ function publicar(){
     FB.salvarSala(SALA,{estado:j}).catch(x=>toast(erroPT(x)));
   },250);
 }
+const evt=o=>Object.assign({id:Date.now(),tipo:'dado',aguardando:false,convite:false,semDado:false,apoio:false,uid:'',cls:'',res:''},o);
 const avisar=(uid,texto)=>FB.salvarSala(SALA,{aviso:{uid,texto,id:Date.now()+Math.random()}}).catch(()=>{});
 function receberAcao(id,a){
   if(a.tipo==='rolar'){
@@ -1617,7 +1618,7 @@ setTimeout(()=>{if(!window.FB)msgL('Sem conexão com o Firebase por enquanto. Vo
 <script type='module'>
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,updateProfile} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,addDoc,deleteDoc,query,where,orderBy,limit} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,addDoc,deleteDoc,updateDoc,query,where,orderBy,limit} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 const app=initializeApp({
   apiKey:'AIzaSyBuzDZ1Cv_OFY6pCnAqw4NSOFjHIEOTjgs',
   authDomain:'mesa-rpg-porata.firebaseapp.com',
@@ -1636,7 +1637,7 @@ window.FB={
   sair:()=>signOut(auth),
   lerSala:async cod=>{const d=await getDoc(doc(db,'salas',cod));return d.exists()?d.data():null},
   criarSala:(cod,dados)=>setDoc(doc(db,'salas',cod),dados),
-  salvarSala:(cod,dados)=>setDoc(doc(db,'salas',cod),dados,{merge:true}),
+  salvarSala:(cod,dados)=>updateDoc(doc(db,'salas',cod),dados),
   ouvirSala:(cod,cb,erro)=>onSnapshot(doc(db,'salas',cod),d=>cb(d.exists()?d.data():null),erro),
   enviarAcao:(cod,a)=>addDoc(collection(db,'salas',cod,'acoes'),a),
   ouvirAcoes:(cod,cb)=>onSnapshot(collection(db,'salas',cod,'acoes'),s=>s.docChanges().forEach(c=>{if(c.type==='added')cb(c.doc.id,c.doc.data())})),
