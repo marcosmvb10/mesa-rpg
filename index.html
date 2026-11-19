@@ -429,6 +429,27 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 .opc.bloq{opacity:.55;filter:grayscale(.6)}.opc.perd{opacity:.4}
 .ot{display:flex;align-items:center;gap:6px}.ot .oc{margin-left:auto;font-weight:bold}
 .opc details{margin:3px 0}.opc summary{cursor:pointer;font-size:12px;color:#4a1f0a}
+/* Habilidades em linha (horizontal) + quadro de detalhes */
+.hrow{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 6px;-webkit-overflow-scrolling:touch}
+.htile{flex:1 0 96px;max-width:150px;position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 6px;border:2px solid rgba(90,59,28,.5);border-radius:10px;background:rgba(255,255,255,.3);color:#3b2410;font:13px Georgia,serif;cursor:pointer;text-align:center}
+.htile .hic{font-size:30px;line-height:1.1}.htile b{font-size:12px;line-height:1.15}.htile .hc{font-weight:bold;font-size:12px;color:#9a4a00}
+.htile .hl{position:absolute;top:2px;left:4px;font-size:12px;opacity:.8}
+.htile.livre{border-color:#1f8a4c;box-shadow:0 0 10px rgba(47,191,108,.55)}
+.htile.chosen{border-color:#c9a24a;background:rgba(216,178,90,.45)}
+.htile.bloq{opacity:.6;filter:grayscale(.6)}.htile.perd{opacity:.45}
+.htile:active{transform:scale(.97)}
+#habModal{display:none;position:fixed;inset:0;z-index:95;align-items:center;justify-content:center;padding:12px}
+#habModal.on{display:flex}
+#habModal .hmback{position:absolute;inset:0;background:rgba(2,4,8,.72)}
+#habModal .hmcard{position:relative;width:100%;max-width:420px;max-height:92vh;overflow:auto;background:linear-gradient(#f3e5bd,#e2cd96);border:3px solid #c9a24a;border-radius:14px;padding:14px;color:#3b2410;box-shadow:0 10px 40px rgba(0,0,0,.7)}
+#habModal .hmcard.forte{border-color:#ffb300;box-shadow:0 0 22px rgba(255,179,0,.6),0 10px 40px rgba(0,0,0,.7)}
+.hmtop{display:flex;align-items:center;gap:10px}.hmic{font-size:46px}.hmnome{font-family:var(--fd,Georgia),serif;font-size:22px;color:#4a1f0a}
+.hmcusto{margin-left:auto;font-weight:bold;font-size:20px;color:#9a4a00}
+.hmdesc{margin:10px 0;font-style:italic}
+.hmef{background:rgba(0,0,0,.08);border-radius:8px;padding:8px;font-size:13px}
+.hmaviso{margin-top:8px;font-weight:bold;color:#7a2a1a}
+.hmbtns{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.hmdica{display:block;text-align:center;margin-top:6px;opacity:.75}
 .camposB{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}.camposB>div{flex:1;min-width:90px}
 .fh .ro{background:rgba(0,0,0,.06);border-radius:6px;padding:4px 8px;margin-bottom:6px}
 .fh .hist{white-space:pre-wrap;max-height:200px;overflow:auto}
@@ -444,6 +465,7 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 <div id='raio'></div>
 <div id='fundo'></div><canvas id='brasas'></canvas><div id='vinheta'></div>
 <div id='banner'></div>
+<div id='habModal'></div>
 <div id='toast'></div>
 <div id='avisoRegras'></div>
 <div id='testeBox'><div class='pcard'>
@@ -599,7 +621,7 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 
 <script>
 /* ---- Regras ajustaveis (mexa aqui para balancear) ---- */
-const KEY='mesaRPG_pirata2';
+const KEY='mesaRPG_pirata3';
 const REGEN=2;            // estamina recuperada SOMENTE ao passar a vez (fim do turno)
 const ESTAMINA_BASE=20;   // estamina maxima de todo heroi novo
 const XP_POR_NIVEL=100;   // XP necessario para subir de nivel (o excedente e preservado)
@@ -634,12 +656,51 @@ const CLASSES_LEGADO={
    Para criar uma nova etapa: adicione { nivel, titulo, opcoes:[ids] } abaixo e cadastre as habilidades novas em HABILIDADES. */
 const HABILIDADES={};
 Object.values(CLASSES_LEGADO).forEach(c=>c.habs.forEach(h=>{HABILIDADES[h.id]=h}));
-const LEGADO={guerra:['g1','g2','g3','g4'],bucaneiro:['b1','b2','b3','b4'],feiticeiro:['f1','f2','f3','f4']}; // herois antigos mantem as 4 habilidades da classe
+const LEGADO={guerra:['g1','g2','g3','g4'],bucaneiro:['b1','b2','b3','b4'],feiticeiro:['f1','f2','f3','f4']}; // herois antigos mantem as 4 habilidades da classe (so compatibilidade; nao aparecem na arvore nova)
+/* Linhas de habilidade (nao existem mais classes): em cada nivel o heroi escolhe 1 habilidade entre as 5 linhas. */
+const LINHAS={espada:{nome:'Espada',ic:'⚔️'},tiro:{nome:'Tiro',ic:'🔫'},magia:{nome:'Magia',ic:'🔮'},cura:{nome:'Cura',ic:'💚'},escudo:{nome:'Escudo',ic:'🛡️'}};
+/* Campos: attr = atributo principal; attrs = lista mostrada na ficha; f = dano; cura = cura; ef = efeito no inimigo;
+   efAl = efeito no aliado; efSi = efeito em quem usou; alvo:'qualquer' = aliado/voce (cura e efeito de apoio) OU inimigo (dano menor);
+   grupo:true (com alvo 'qualquer') = atinge todos os aliados ou todos os inimigos. */
+const HABS_NOVAS=[
+ /* ---- ESPADA (Forca) ---- */
+ {id:'e1',linha:'espada',attr:'forca',nome:'Golpe de Espada',ic:'🗡️',custo:3,f:{forca:1.1},desc:'Golpe básico e barato com a espada.'},
+ {id:'e2',linha:'espada',attr:'forca',nome:'Corte Sangrento',ic:'🩸',custo:5,f:{forca:1.0},ef:{nome:'Sangramento',ic:'🩸',t:3,dotF:{forca:.3}},desc:'Corte que faz o alvo sangrar por 3 turnos.'},
+ {id:'e3',linha:'espada',attr:'forca',nome:'Quebra-Escudo',ic:'🪓',custo:7,f:{forca:1.4},ef:{nome:'Guarda Quebrada',ic:'💥',t:2,atq:-30},desc:'Golpe pesado que quebra a guarda: o alvo causa 30% menos dano por 2 turnos.'},
+ {id:'e4',linha:'espada',attr:'forca',nome:'Redemoinho de Lâminas',ic:'🌪️',custo:9,alvo:'area',f:{forca:.9},desc:'Gira a lâmina e acerta todos os inimigos.'},
+ {id:'e5',linha:'espada',attr:'forca',nome:'Lâmina do Capitão',ic:'⚔️',custo:14,forte:1,f:{forca:3},crit:18,desc:'Ultimate: o golpe mais forte da espada. Crítico a partir de 18.'},
+ /* ---- TIRO (Agilidade) ---- */
+ {id:'t1',linha:'tiro',attr:'agi',nome:'Tiro de Pistola',ic:'🔫',custo:4,f:{agi:1.3},crit:19,desc:'Tiro rápido e forte. Crítico a partir de 19.'},
+ {id:'t2',linha:'tiro',attr:'agi',nome:'Tiro nas Pernas',ic:'🦵',custo:5,f:{agi:.9},ef:{nome:'Perna Ferida',ic:'🦵',t:2,rolo:-3},desc:'Tiro nas pernas: o alvo fica com -3 nas rolagens de ataque por 2 turnos.'},
+ {id:'t3',linha:'tiro',attr:'agi',nome:'Cortina de Fumaça',ic:'💨',custo:7,alvo:'si',efSi:[{nome:'Invisível',ic:'👻',t:2,oculto:true,gasta:true},{nome:'Emboscada',ic:'🎯',t:2,atq:50,gasta:true}],desc:'Some na fumaça: fica invisível (não pode ser alvo) e o próximo ataque causa 50% a mais de dano. Ambos acabam depois do próximo ataque.'},
+ {id:'t4',linha:'tiro',attr:'agi',nome:'Chuva de Balas',ic:'🎆',custo:10,alvo:'area',f:{agi:1.0},crit:19,desc:'Dispara contra todos os inimigos de uma vez. Crítico a partir de 19.'},
+ {id:'t5',linha:'tiro',attr:'agi',nome:'Tiro Mortal',ic:'☠️',custo:15,forte:1,f:{agi:3.2},crit:17,desc:'Ultimate: disparo devastador, o mais forte do jogo. Crítico a partir de 17.'},
+ /* ---- MAGIA (Inteligencia) ---- */
+ {id:'m1',linha:'magia',attr:'inte',nome:'Rajada Arcana',ic:'🔮',custo:4,f:{inte:1.2},desc:'Rajada de energia arcana.'},
+ {id:'m2',linha:'magia',attr:'inte',nome:'Fogo de Santelmo',ic:'🔥',custo:5,f:{inte:.9},ef:{nome:'Queimadura',ic:'🔥',t:3,dotF:{inte:.3}},desc:'Chama que queima o alvo por 3 turnos.'},
+ {id:'m3',linha:'magia',attr:'inte',nome:'Praga da Maré',ic:'🐙',custo:7,f:{inte:.8},ef:{nome:'Maldição da Maré',ic:'🌊',t:3,dotF:{inte:.3},rolo:-2},desc:'Amaldiçoa o alvo por 3 turnos: ele sofre dano a cada vez dele e tem -2 nas rolagens de ataque.'},
+ {id:'m4',linha:'magia',attr:'inte',nome:'Tempestade Relâmpago',ic:'⚡',custo:10,alvo:'area',f:{inte:1.1},desc:'Raios atingem todos os inimigos.'},
+ {id:'m5',linha:'magia',attr:'inte',nome:'Tsunami Amaldiçoado',ic:'🌀',custo:14,forte:1,alvo:'area',f:{inte:1.8},ef:{nome:'Maldição da Maré',ic:'🌊',t:2,rolo:-2},desc:'Ultimate: uma onda amaldiçoada atinge todos os inimigos, causando dano e -2 nas rolagens deles.'},
+ /* ---- CURA (Inteligencia): cura voce/aliado OU ataca inimigo com dano bem menor ---- */
+ {id:'c1',linha:'cura',attr:'inte',nome:'Maré Curativa',ic:'💚',custo:4,alvo:'qualquer',cura:{f:{inte:1.6}},f:{inte:.6},desc:'Toque em você ou num aliado para curar. Toque num inimigo para atacar com a cura (dano bem menor).'},
+ {id:'c2',linha:'cura',attr:'inte',nome:'Véu das Águas',ic:'💧',custo:6,alvo:'qualquer',efAl:{nome:'Véu das Águas',ic:'💦',t:3,escudo:true,absorveF:{inte:1.6}},f:{inte:.5},ef:{nome:'Maré Turva',ic:'🌫️',t:2,rolo:-2},desc:'Em você ou aliado: escudo de água que absorve dano. Em um inimigo: dano pequeno e -2 nas rolagens dele por 2 turnos.'},
+ {id:'c3',linha:'cura',attr:'inte',nome:'Bênção da Brisa',ic:'🌬️',custo:7,alvo:'qualquer',cura:{f:{inte:1.5}},efAl:{nome:'Brisa Favorável',ic:'🌬️',t:3,rolo:2},f:{inte:.6},ef:{nome:'Brisa Contrária',ic:'🌫️',t:2,rolo:-2},desc:'Em você ou aliado: cura e +2 nas rolagens por 3 turnos. Em um inimigo: dano pequeno e -2 nas rolagens dele por 2 turnos.'},
+ {id:'c4',linha:'cura',attr:'inte',nome:'Chuva Curativa',ic:'🌧️',custo:9,alvo:'qualquer',grupo:true,cura:{f:{inte:1.3}},f:{inte:.5},desc:'Toque num aliado: cura todos os aliados. Toque num inimigo: dano pequeno em todos os inimigos.'},
+ {id:'c5',linha:'cura',attr:'inte',nome:'Maré Cheia',ic:'🌕',custo:14,forte:1,alvo:'qualquer',grupo:true,cura:{f:{inte:2.2}},efAl:{nome:'Escudo da Maré',ic:'💦',t:3,escudo:true,absorveF:{inte:1.0}},f:{inte:.9},desc:'Ultimate. Toque num aliado: cura todos os aliados e dá um escudo a cada um. Toque num inimigo: dano em todos os inimigos.'},
+ /* ---- ESCUDO (Forca + Constituicao, com mais peso na Constituicao) ---- */
+ {id:'s1',linha:'escudo',attr:'forca',attrs:['forca','con'],nome:'Guarda Alta',ic:'🛡️',custo:3,alvo:'si',efSi:[{nome:'Guarda Alta',ic:'🛡️',t:2,vuln:-40},{nome:'Escudo da Guarda',ic:'🔰',t:2,escudo:true,absorveF:{forca:.3,con:.8}}],desc:'Ergue o escudo: você recebe 40% menos dano por 2 turnos e ganha um pequeno escudo.'},
+ {id:'s2',linha:'escudo',attr:'forca',attrs:['forca','con'],nome:'Escudada',ic:'💫',custo:5,f:{forca:.7,con:.5},ef:{nome:'Abalado',ic:'💫',t:2,atq:-30},desc:'Pancada de escudo que abala o inimigo: ele causa 30% menos dano por 2 turnos.'},
+ {id:'s3',linha:'escudo',attr:'forca',attrs:['forca','con'],nome:'Muralha de Escudos',ic:'🏰',custo:7,alvo:'aliado',efAl:[{nome:'Sob a Muralha',ic:'🏰',t:2,vuln:-40},{nome:'Escudo da Muralha',ic:'🔰',t:2,escudo:true,absorveF:{forca:.3,con:1}}],efSi:{nome:'Provocação',ic:'📢',t:2,provoca:true},desc:'Protege um aliado (ou você): 40% menos dano por 2 turnos e um escudo. Você provoca os inimigos, que só podem atacar você.'},
+ {id:'s4',linha:'escudo',attr:'forca',attrs:['forca','con'],nome:'Escudo Coletivo',ic:'🛡️',custo:10,alvo:'aliados',efAl:{nome:'Escudo Coletivo',ic:'🔰',t:2,escudo:true,absorveF:{forca:.5,con:1.5}},efSi:{nome:'Provocação',ic:'📢',t:2,provoca:true},desc:'Todos os aliados ganham um escudo que absorve dano por 2 turnos. Você provoca os inimigos.'},
+ {id:'s5',linha:'escudo',attr:'forca',attrs:['forca','con'],nome:'Bastião Inabalável',ic:'⚓',custo:14,forte:1,alvo:'aliados',efAl:{nome:'Bastião',ic:'⚓',t:3,vuln:-30},efSi:[{nome:'Provocação',ic:'📢',t:3,provoca:true},{nome:'Escudo do Bastião',ic:'🛡️',t:3,escudo:true,absorveF:{forca:1,con:3}}],desc:'Ultimate: todos os aliados recebem 30% menos dano por 3 turnos. Você provoca os inimigos e ganha um grande escudo.'}
+];
+HABS_NOVAS.forEach(h=>{HABILIDADES[h.id]=h});
 const ARVORE=[
-  {nivel:1,titulo:'Primeira habilidade',opcoes:['g1','g2','b1','b2','f1']},
-  {nivel:3,titulo:'Segunda habilidade',opcoes:['g3','b3','f2','f3']},
-  /* Etapa extra sugerida para nao perder as ultimates: apague ou altere se preferir. */
-  {nivel:5,titulo:'Habilidade suprema',opcoes:['g4','b4','f4']}
+  {nivel:1,titulo:'Habilidade básica',opcoes:['e1','t1','m1','c1','s1']},
+  {nivel:2,titulo:'Habilidade com efeito',opcoes:['e2','t2','m2','c2','s2']},
+  {nivel:3,titulo:'Habilidade tática',opcoes:['e3','t3','m3','c3','s3']},
+  {nivel:4,titulo:'Habilidade de área / grupo',opcoes:['e4','t4','m4','c4','s4']},
+  {nivel:5,titulo:'Habilidade suprema (ultimate)',opcoes:['e5','t5','m5','c5','s5']}
 ];
 
 /* ======================= CONSUMIVEIS =======================
@@ -679,11 +740,7 @@ const DEBUFFS=[
 const copiaDeb=()=>DEBUFFS.map(d=>Object.assign({dotV:0,dotEst:0,atq:0,rolo:0,vuln:0,custoEst:0,pular:false,bloqForte:false,semRegen:false},d));
 
 /* personagens do backup: entram so na primeira abertura (ou depois de Carregar backup) */
-const SEED={jogadores:[
- {id:1794340337404,nome:'Marcos',foto:'',classe:'guerra',vida:50,vidaMax:100,est:100,estMax:100,forca:10,car:10,inte:10,con:6,agi:10,din:10,arena:true,status:[]},
- {id:1794340476604,nome:'Thiago',foto:'',classe:'bucaneiro',vida:100,vidaMax:100,est:100,estMax:100,forca:10,car:10,inte:10,con:6,agi:10,din:10,arena:true,status:[]},
- {id:1794340492619,nome:'Matheus',foto:'',classe:'feiticeiro',vida:100,vidaMax:100,est:100,estMax:100,forca:10,car:10,inte:10,con:6,agi:10,din:10,arena:true,status:[]}],
- monstros:[{id:1794340358700,nome:'Jorge',foto:'',vida:100,vidaMax:100,dano:10,arena:true,status:[]}],log:[],custos:{},turno:3};
+const SEED={jogadores:[],monstros:[],log:[],custos:{},turno:1}; // jogo limpo: nenhum herói nem monstro cadastrado
 
 const base=()=>({jogadores:[],monstros:[],log:[],custos:{},turno:1,mudo:false,ordem:[],debuffs:null,rolagem:{faces:20,dif:10}});
 let estado=base(),mira=null,rolando=false,VEZ=null,ALVOM='todos';
@@ -984,8 +1041,8 @@ function marcarMira(){
   const tk=$('tk'+p.id);if(tk)tk.classList.add('atacante');
   const b=h&&document.querySelector(`.skill[data-id='${p.id}'][data-h='${h.id}']`);if(b)b.classList.add('sel');
   const apoio=h&&['si','aliado','aliados'].includes(h.alvo);
-  alvosValidos(p,h).forEach(q=>{const e=$('tk'+q.id);if(e)e.classList.add(apoio?'alvo-al':'alvo-ok')});
-  d.innerHTML=`⚔️ <b>${esc(p.nome)}</b>${h?' vai usar <b>'+h.nome+'</b>':' vai atacar'}: ${ehAuto(h)?'toque de novo na habilidade para confirmar':'toque no alvo'} <small>(toque aqui para cancelar)</small>`;
+  alvosValidos(p,h).forEach(q=>{const e=$('tk'+q.id);if(e)e.classList.add(apoio||(h&&h.alvo==='qualquer'&&q.lado===p.lado)?'alvo-al':'alvo-ok')});
+  d.innerHTML=`⚔️ <b>${esc(p.nome)}</b>${h?' vai usar <b>'+h.nome+'</b>':' vai atacar'}: ${ehAuto(h)?'toque de novo na habilidade para confirmar':(h&&h.alvo==='qualquer'?'toque num aliado para curar ou num inimigo para atacar':'toque no alvo')} <small>(toque aqui para cancelar)</small>`;
   d.classList.add('on');
 }
 function selecionar(tipo,p,h){mira={tipo,id:p.id,hab:h?h.id:null};somTick();marcarMira()}
@@ -996,7 +1053,7 @@ function disparar(alvo,t){
   if(ONLINE&&PAPEL==='jogador'){enviar({tipo:'atacar',heroiId:atac.id,habId:h?h.id:null,alvoTipo:t||null,alvoId:alvo?alvo.id:null,faces:+$('dado_sel').value||20});return}
   executarAcao(atac,m.tipo,alvo,h,{doJogador:false});
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape')cancelar()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){cancelar();if(typeof habModalFechar==='function')habModalFechar()}});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'||!e.target)return;if(e.target.id==='lSenha')autenticar();else if(e.target.id==='lSenhaConf')cadastrar()});
 
 /* ---------- debuffs: efeitos, aplicacao e tela do mestre ---------- */
@@ -1092,11 +1149,12 @@ function resumoSpec(sp,p){
 function habResumo(h,p){
   const alt=h.alvo||'inimigo',L=[];
   const F=f=>p?Math.max(1,Math.round(soma(p,f))):Object.entries(f).map(([k,v])=>ROT[k]+' ×'+v).join(' + ');
-  if(attrDe(h))L.push('Atributo: '+ROT[attrDe(h)]);
-  L.push('Alvo: '+({inimigo:'1 inimigo',area:'todos os inimigos (ou o único que houver)',aliado:'1 aliado (pode ser você)',aliados:'todos os aliados',si:'você'}[alt]));
-  if(h.f)L.push((alt==='area'?'Dano em cada alvo: ':'Dano: ')+F(h.f));
+  const AT=h.attrs||(attrDe(h)?[attrDe(h)]:[]);
+  if(AT.length)L.push('Atributo: '+AT.map(k=>ROT[k]).join(' + ')+(AT.length>1?' (a Constituição pesa mais)':''));
+  L.push('Alvo: '+({inimigo:'1 inimigo',area:'todos os inimigos (ou o único que houver)',aliado:'1 aliado (pode ser você)',aliados:'todos os aliados',si:'você',qualquer:h.grupo?'todos os aliados (cura/apoio) ou todos os inimigos (ataca)':'1 aliado ou você (cura/apoio) ou 1 inimigo (ataca)'}[alt]));
+  if(h.f)L.push((alt==='area'?'Dano em cada alvo: ':(alt==='qualquer'?'Dano se atacar um inimigo: ':'Dano: '))+F(h.f));
   if(h.cura)L.push('Cura: '+F(h.cura.f));
-  [['ef','No alvo'],['efAl','No aliado'],['efSi','Em você']].forEach(([k,r])=>[].concat(h[k]||[]).forEach(sp=>L.push(r+': '+sp.ic+' '+sp.nome+' — '+resumoSpec(sp,p))));
+  [['ef',alt==='qualquer'?'No inimigo':'No alvo'],['efAl','No aliado'],['efSi','Em você']].forEach(([k,r])=>[].concat(h[k]||[]).forEach(sp=>L.push(r+': '+sp.ic+' '+sp.nome+' — '+resumoSpec(sp,p))));
   if(h.crit)L.push('Crítico a partir de '+h.crit);
   return L;
 }
@@ -1106,6 +1164,11 @@ function alvosValidos(atac,h){
   const alt=h?(h.alvo||'inimigo'):'inimigo';
   if(alt==='si')return [atac];
   if(alt==='aliado'||alt==='aliados')return aliadosVivos(atac);
+  if(alt==='qualquer'){ /* aliados (inclui voce) + inimigos visiveis; provocacao so vale para ataque de alvo unico */
+    let en=vivosArena().filter(p=>p.lado!==atac.lado&&!temEf(p,'oculto'));
+    const pv=en.filter(p=>temEf(p,'provoca'));if(pv.length&&!h.grupo)en=pv;
+    return [...aliadosVivos(atac),...en];
+  }
   let L=vivosArena().filter(p=>p.lado!==atac.lado&&!temEf(p,'oculto'));
   const pv=L.filter(p=>temEf(p,'provoca'));
   if(pv.length&&alt!=='area')L=pv;
@@ -1119,6 +1182,12 @@ function sofrer(q,dn){
   return {rest,abs};
 }
 function usarHab(atac,tipo,alvo,h,dec){
+  if(h&&h.alvo==='qualquer'){ /* cura: aliado/voce => apoio (cura); inimigo => ataque com dano menor */
+    const aliado=!!alvo&&alvo.lado===atac.lado;
+    h=Object.assign({},h);
+    if(aliado){h.alvo=h.grupo?'aliados':'aliado';delete h.f;delete h.ef}
+    else{h.alvo=h.grupo?'area':'inimigo';delete h.cura;delete h.efAl;delete h.efSi}
+  }
   const alt=h?(h.alvo||'inimigo'):'inimigo';
   if(alt==='si'||alt==='aliado'||alt==='aliados')return usarApoio(atac,h,alvo,dec);
   return atacar(atac,tipo,alvo,h,dec);
@@ -1348,7 +1417,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');
   if(!b){if(mira&&!e.target.closest('.topo'))cancelar();return}
   const a=b.dataset.act,t=b.dataset.t,id=+b.dataset.id,p=t&&id?buscar(t,id):null;
-  if(PAPEL==='jogador'&&!['cancelar','criarmeu','vincularmeu','passarminhavez','sairsala','moadd','moremover','chatalt','chatenviar','rolarjogador','fecharaviso','usaritem','attrmais','confirmarpts','desfazerpts','fichaaba','comprar','escolher','testeabrir','testeenviar','testecancelar'].includes(a))return;
+  if(PAPEL==='jogador'&&!['cancelar','criarmeu','vincularmeu','passarminhavez','sairsala','moadd','moremover','chatalt','chatenviar','rolarjogador','fecharaviso','usaritem','attrmais','confirmarpts','desfazerpts','fichaaba','comprar','escolher','habver','habfechar','habok','testeabrir','testeenviar','testecancelar'].includes(a))return;
   if(onlineAct(a,b))return;
   if(a==='add'){addPersonagem(t);return}
   if(a==='curar'&&p){p.vida=p.vidaMax;if(p.estMax!==undefined)p.est=p.estMax;p.status=[];somCura()}
@@ -1938,6 +2007,9 @@ function onlineAct(a,b){
       fichaAcao(p.id,'confirmarPontos',{distr:pd});delete pontosPend[p.id];sigMeu='';sigFicha='';renderMeu();renderFichas(true);return true}
     case 'desfazerpts':delete pontosPend[+b.dataset.id];sigMeu='';sigFicha='';renderMeu();renderFichas(true);return true;
     case 'resetpts':if(confirm('Redefinir todos os pontos distribuídos? Os pontos voltam para você distribuir de novo.'))fichaAcao(+b.dataset.id,'resetPontos');return true;
+    case 'habver':habModalAbrir(+b.dataset.id,+b.dataset.n,b.dataset.h);return true;
+    case 'habfechar':habModalFechar();return true;
+    case 'habok':{if(!habSel)return true;const hs=habSel;habModalFechar();fichaAcao(hs.id,'escolher',{n:hs.n,h:hs.h});return true}
     case 'escolher':if(confirm('Escolher esta habilidade? A escolha é permanente nesta etapa.'))fichaAcao(+b.dataset.id,'escolher',{n:+b.dataset.n,h:b.dataset.h});return true;
     case 'trocaresc':fichaAcao(+b.dataset.id,'trocarEscolha',{n:+b.dataset.n});return true;
     case 'pedrolar':decidirPedido('rolar');return true;
@@ -2203,6 +2275,29 @@ function pendDe(p){ /* devolve a escolha pendente, limitada aos pontos que o her
   pontosPend[p.id]=r;return r;
 }
 var fichaAba='atr'; /* aba aberta na ficha: atr / hab / id */
+/* Quadro de detalhes da habilidade: abre ao tocar numa habilidade da ficha (fica fora da ficha, entao nao some quando a ficha atualiza) */
+var habSel=null;
+function habModalAbrir(heroiId,n,hid){
+  const p=estado.jogadores.find(x=>x.id===heroiId),h=HABILIDADES[hid];if(!p||!h)return;
+  const et=etapasDe(p).find(x=>x.nivel===n),posse=habsDe(p).some(x=>x.id===hid);
+  const pode=!!et&&et.liberada&&!et.escolhida&&!posse&&et.opcoes.includes(hid);
+  const ln=LINHAS[h.linha]||null;
+  let aviso='';
+  if(et&&!et.liberada)aviso=`🔒 Esta habilidade libera no nível ${et.nivel}.`;
+  else if(posse)aviso='✅ Você já tem esta habilidade.';
+  else if(et&&et.escolhida)aviso='Você já escolheu outra habilidade neste nível.';
+  habSel={id:heroiId,n,h:hid};
+  $('habModal').innerHTML=`<div class='hmback' data-act='habfechar'></div><div class='hmcard ${h.forte?'forte':''}'>
+    <div class='hmtop'><span class='hmic'>${h.ic}</span><div><b class='hmnome'>${esc(h.nome)}${h.forte?' ⭐':''}</b><br><small>${ln?ln.ic+' Linha de '+ln.nome+' · ':''}Nível ${n}</small></div><span class='hmcusto'>⚡ ${custo(h)}</span></div>
+    <p class='hmdesc'>${esc(h.desc||'')}</p>
+    <div class='hmef'><b>O que ela faz</b><br>${habResumo(h,p).join('<br>')}</div>
+    ${aviso?`<div class='hmaviso'>${aviso}</div>`:''}
+    <div class='hmbtns'>${pode?`<button class='btn' data-act='habok'>✔ Confirmar esta habilidade</button><button class='btn azul' data-act='habfechar'>↩ Ver outras habilidades</button>`:`<button class='btn' data-act='habfechar'>Fechar</button>`}</div>
+    ${pode?`<small class='hmdica'>A escolha é permanente neste nível.</small>`:''}
+  </div>`;
+  $('habModal').classList.add('on');
+}
+function habModalFechar(){habSel=null;const m=$('habModal');if(m){m.classList.remove('on');m.innerHTML=''}}
 function fichaHeroiHTML(p,modo){
   const id=p.id,mestre=modo==='mestre',pt=pontosDe(p),d=`data-t='jogadores' data-id='${id}'`;
   const pctXp=Math.min(100,(p.xp||0)/XP_POR_NIVEL*100),pctV=p.vidaMax?Math.max(0,p.vida/p.vidaMax*100):0,pctE=p.estMax?Math.min(100,p.est/p.estMax*100):0;
@@ -2214,13 +2309,15 @@ function fichaHeroiHTML(p,modo){
   const tem=habsDe(p);
   const etapas=etapasDe(p).map(e=>{
     const tag=e.escolhida?`<span class='st-ok'>✅ Escolhida</span>`:(e.liberada?`<span class='st-livre'>🔓 Escolha 1</span>`:`<span class='st-bloq'>🔒 Requer nível ${e.nivel}</span>`);
-    const opcs=e.opcoes.map(hid=>{
+    const lista=e.opcoes.slice();if(e.escolhida&&!lista.includes(e.escolhida))lista.unshift(e.escolhida);
+    const tiles=lista.map(hid=>{
       const h=HABILIDADES[hid];if(!h)return '';
       const sel=e.escolhida===hid,posse=tem.some(x=>x.id===hid),pode=e.liberada&&!e.escolhida&&!posse;
       const cls=sel?'chosen':(pode?'livre':(e.escolhida?'perd':(posse?'chosen':'bloq')));
-      return `<div class='opc ${cls}'><div class='ot'><span class='ic'>${h.ic}</span><b>${h.nome}</b>${h.forte?' ⭐':''}<span class='oc'>⚡ ${custo(h)}</span></div><small>${h.desc||''}</small><details><summary>Efeitos</summary><small>${habResumo(h,p).join('<br>')}</small></details>${pode?`<button class='btn peq' data-act='escolher' data-id='${id}' data-n='${e.nivel}' data-h='${h.id}'>✔ Escolher</button>`:''}${posse&&!sel?'<small>✅ Já possui</small>':''}</div>`;
+      const ln=LINHAS[h.linha];
+      return `<button type='button' class='htile ${cls}' data-act='habver' data-id='${id}' data-n='${e.nivel}' data-h='${h.id}' title='${escA(h.nome)}'><span class='hl'>${ln?ln.ic:''}</span><span class='hic'>${h.ic}</span><b>${esc(h.nome)}</b><span class='hc'>⚡ ${custo(h)}</span></button>`;
     }).join('');
-    return `<div class='etapa-card'><div class='eh'><b>Nível ${e.nivel} — ${esc(e.titulo)}</b>${tag}${mestre&&e.escolhida?`<button class='btn peq verm' data-act='trocaresc' data-id='${id}' data-n='${e.nivel}'>↩ Trocar</button>`:''}</div>${opcs}</div>`;
+    return `<div class='etapa-card'><div class='eh'><b>Nível ${e.nivel} — ${esc(e.titulo)}</b>${tag}${mestre&&e.escolhida?`<button class='btn peq verm' data-act='trocaresc' data-id='${id}' data-n='${e.nivel}'>↩ Trocar</button>`:''}</div><div class='hrow'>${tiles}</div></div>`;
   }).join('');
   const legado=(p.habsLegado||[]).map(h=>HABILIDADES[h]).filter(Boolean);
   /* Casas de habilidade ao redor do retrato (so mostram o que o heroi ja possui) */
@@ -2293,7 +2390,7 @@ function cadHeroiHTML(x,titulo,nivelEd,botao){
     <div class='l'><div><small>Peso (kg)</small><input id='${x}Peso' type='number'></div><div><small>Altura (cm)</small><input id='${x}Altura' type='number'></div></div>
     <div class='l'><div><small>Histórico do personagem</small><textarea id='${x}Hist' rows='3' maxlength='1500'></textarea></div></div>
     <div class='sec'>⚔️ Habilidades</div>
-    <div class='dica'>As habilidades não são digitadas aqui: o herói escolhe <b>1 por etapa</b> na ficha (níveis 1, 3 e 5), e cada uma usa um atributo (Força, Inteligência ou Agilidade).</div>
+    <div class='dica'>As habilidades não são digitadas aqui: o herói escolhe <b>1 por etapa</b> na ficha (níveis 1 a 5), entre 5 linhas: Espada, Tiro, Magia, Cura e Escudo.</div>
     ${botao}</div>`;
 }
 function formCriarHTML(livres){
