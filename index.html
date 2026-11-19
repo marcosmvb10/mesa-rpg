@@ -204,12 +204,12 @@ body[data-papel=jogador] .chip{pointer-events:none}
 .pres.m{border-color:#d8b25a;background:rgba(216,178,90,.18);color:#ffe9b0;font-weight:bold}
 .pres i{width:7px;height:7px;border-radius:50%;background:#4cd964;box-shadow:0 0 6px #4cd964}
 #chat{position:fixed;left:8px;bottom:8px;z-index:45;width:min(340px,82vw);display:none;pointer-events:none}
-#chatMsgs{display:flex;flex-direction:column;gap:3px;max-height:34vh;overflow-y:auto;padding:4px 6px;border-radius:10px}
+#chatMsgs{display:flex;flex-direction:column;gap:3px;max-height:24vh;overflow-y:auto;padding:4px 6px;border-radius:10px}
 .cm{font-size:13px;color:#f1e6c8;text-shadow:0 1px 3px #000,0 0 6px #000;padding:3px 8px;border-radius:8px;background:rgba(5,8,14,.28);display:none;word-break:break-word}
 .cm.nova{display:block;animation:cmEntra .25s}
 @keyframes cmEntra{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
 .cm b{color:#7fd6d6}.cm.m b{color:#ffd36b}
-#chat.aberto #chatMsgs{background:rgba(5,8,14,.45);pointer-events:auto}
+#chat.aberto #chatMsgs{background:rgba(5,8,14,.35);pointer-events:auto}
 #chat.aberto .cm{display:block}
 #chatForm{display:none;gap:6px;margin-top:4px;pointer-events:auto}
 #chat.aberto #chatForm{display:flex}
@@ -1848,8 +1848,9 @@ function aoReceberChat(lista){
   chatMsgs=lista.map(m=>Object.assign({},m,{nova:novas.some(n=>n.id===m.id)}));
   chatPrimeira=false;
   renderChat();
+  if(novas.length)chatAgendaFechar(); // mensagem nova mantem aberto por mais 15 s
   novas.forEach(m=>{
-    setTimeout(()=>{const x=chatMsgs.find(c=>c.id===m.id);if(x)x.nova=false;const e=document.querySelector(`#chatMsgs [data-id='${m.id}']`);if(e)e.classList.remove('nova')},12000);
+    setTimeout(()=>{const x=chatMsgs.find(c=>c.id===m.id);if(x)x.nova=false;const e=document.querySelector(`#chatMsgs [data-id='${m.id}']`);if(e)e.classList.remove('nova')},15000);
     if(m.uid!==MEUUID){
       somMsg();
       if(!$('chat').classList.contains('aberto')){chatNaoLidas++;const b=$('chatNovo');b.textContent=chatNaoLidas;b.style.display='block'}
@@ -1861,15 +1862,27 @@ function renderChat(){
   el.innerHTML=chatMsgs.slice(-40).map(m=>`<div class='cm ${m.papel==='mestre'?'m':''} ${m.nova?'nova':''}' data-id='${esc(m.id)}'><b>${m.papel==='mestre'?'🎭':'🛡️'} ${esc(String(m.nome||'?').slice(0,16))}:</b> ${esc(String(m.texto||'').slice(0,300))}</div>`).join('');
   el.scrollTop=el.scrollHeight;
 }
+/* Chat aberto fecha sozinho depois de 15 s sem mensagem nova nem texto sendo digitado, para nao ficar na frente do jogo. */
+let chatTimer=null;
+function chatAgendaFechar(){
+  clearTimeout(chatTimer);
+  if(!$('chat').classList.contains('aberto'))return;
+  chatTimer=setTimeout(()=>{
+    const c=$('chat');if(!c.classList.contains('aberto'))return;
+    if(String($('chatTxt').value||'').trim()){chatAgendaFechar();return} // ainda digitando: espera
+    c.classList.remove('aberto');try{$('chatTxt').blur()}catch(e){}
+  },15000);
+}
 function chatAlternar(){
   const c=$('chat'),abrir=!c.classList.contains('aberto');
   c.classList.toggle('aberto',abrir);
+  if(abrir)chatAgendaFechar();else clearTimeout(chatTimer);
   if(abrir){chatNaoLidas=0;$('chatNovo').style.display='none';$('chatMsgs').scrollTop=$('chatMsgs').scrollHeight;setTimeout(()=>{try{$('chatTxt').focus()}catch(e){}},30)}
 }
 function chatEnviar(){
   const i=$('chatTxt'),t=String(i.value||'').trim().slice(0,240);
   if(!t||!ONLINE)return;
-  const agora=Date.now();if(agora-chatEnvioTs<700)return;chatEnvioTs=agora;
+  const agora=Date.now();if(agora-chatEnvioTs<700)return;chatEnvioTs=agora;chatAgendaFechar();
   i.value='';
   FB.enviarChat(SALA,{uid:MEUUID,nome:FB.nome(),papel:PAPEL,texto:t,ts:agora}).catch(x=>toast(erroPT(x)));
 }
@@ -1935,7 +1948,7 @@ function onlineAct(a,b){
     case 'cancelarrolar':resolverRolar('cancelar');return true;
     case 'chatalt':chatAlternar();return true;
     case 'chatenviar':chatEnviar();return true;
-    case 'offline':$('login').style.display='none';return true;
+    case 'offline':$('login').style.display='none';$('barraSala').style.display='flex';$('barraSala').innerHTML=`<span>💻 Modo offline (salvo só neste navegador)</span>${`<button class='btn peq azul' onclick='exportar()' title='Baixa um arquivo com a partida inteira'>💾 Salvar partida</button><label class='btn peq azul' title='Carrega um arquivo salvo'>📂 Carregar partida<input type='file' accept='.json' style='display:none' onchange='importar(this)'></label>`}`;return true;
     case 'entrarconta':autenticar(false);return true;
     case 'abrircadastro':msgL('');mostrarCaixa('cadastro');return true;
     case 'voltarlogin':msgL('');mostrarCaixa('login');return true;
@@ -2013,7 +2026,7 @@ async function entrarSala(cod){
   document.body.dataset.papel=PAPEL;
   $('login').style.display='none';
   $('barraSala').style.display='flex';
-  $('barraSala').innerHTML=`<span>🏴‍☠️ Sala <b class='cod'>${esc(cod)}</b> · ${PAPEL==='mestre'?'Mestre':'Jogador: '+esc(FB.nome())}</span>${PAPEL==='mestre'?'<small>Passe este código aos jogadores.</small>':''}<span id='presenca'></span><button class='btn peq verm' data-act='sairsala'>Sair da sala</button>`;
+  $('barraSala').innerHTML=`<span>🏴‍☠️ Sala <b class='cod'>${esc(cod)}</b> · ${PAPEL==='mestre'?'Mestre':'Jogador: '+esc(FB.nome())}</span>${PAPEL==='mestre'?'<small>Passe este código aos jogadores.</small>':''}<span id='presenca'></span>${PAPEL==='mestre'?`<button class='btn peq azul' onclick='exportar()' title='Baixa um arquivo com a partida inteira'>💾 Salvar partida</button><label class='btn peq azul' title='Carrega um arquivo salvo'>📂 Carregar partida<input type='file' accept='.json' style='display:none' onchange='importar(this)'></label>`:''}<button class='btn peq verm' data-act='sairsala'>Sair da sala</button>`;
   if(PAPEL==='mestre'){
     try{estado=Object.assign(base(),JSON.parse(sala.estado))}catch(e){}
     delete estado.mochilas;MOCH={};delete estado.monstrosLib;MLIB={};
