@@ -450,11 +450,17 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 .hmaviso{margin-top:8px;font-weight:bold;color:#7a2a1a}
 .hmbtns{display:flex;flex-direction:column;gap:6px;margin-top:12px}
 .hmdica{display:block;text-align:center;margin-top:6px;opacity:.75}
+/* casas de equipamento / habilidades da ficha */
+.fh .stage .retrato{height:318px}
+.fh .slot.eq{cursor:pointer}.fh .slot.eq:hover{border-color:#ffe08a}
+.fh .slot.vazio .eqf{opacity:.3;filter:grayscale(1)}
+.mi.eqrow{background:rgba(0,0,0,.05);border-radius:8px;padding:4px 6px;gap:8px}.mi.eqrow.on{background:rgba(216,178,90,.38)}
+.eqnome{flex:1;min-width:0}.eq-on{color:#1f6b3a;font-weight:bold;white-space:nowrap}
 .camposB{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}.camposB>div{flex:1;min-width:90px}
 .fh .ro{background:rgba(0,0,0,.06);border-radius:6px;padding:4px 8px;margin-bottom:6px}
 .fh .hist{white-space:pre-wrap;max-height:200px;overflow:auto}
 .fh input[type=text],.fh textarea{width:100%;font:14px Georgia,serif;padding:5px;border-radius:7px;border:2px solid #8a6420;background:#f3e5bd;color:#3b2410;margin-bottom:6px}
-@media(max-width:760px){.fh{grid-template-columns:1fr;grid-template-areas:'ftopo' 'stage' 'fpainel'}.fh .stage .retrato{height:200px}}
+@media(max-width:760px){.fh{grid-template-columns:1fr;grid-template-areas:'ftopo' 'stage' 'fpainel'}.fh .stage .retrato{height:318px}}
 #avisoRegras{display:none;position:fixed;top:0;left:0;right:0;z-index:99;background:#7a1f1f;color:#fff;padding:10px 14px;text-align:center;font-size:14px;border-bottom:3px solid #ffd36b;box-shadow:0 6px 20px rgba(0,0,0,.7)}
 #avisoRegras.on{display:block}
 </style>
@@ -536,6 +542,7 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
   <button id='abaMochila' data-aba='Mochila'>🎒 Mochila</button>
   <button id='abaLoja' data-aba='Loja'>🏪 Loja</button>
   <button id='abaFichas' class='so-mestre' data-aba='Fichas'>🧙 Heróis</button>
+  <button id='abaEquip' class='so-mestre' data-aba='Equip'>⚒️ Equipamentos</button>
   <button id='abaCadastrar' class='so-mestre' data-aba='Cadastrar'>📝 Cadastrar</button>
   <button id='abaBiblioteca' class='so-mestre' data-aba='Biblioteca'>📚 Biblioteca</button>
   <button id='abaMonstros' class='so-mestre' data-aba='Monstros'>👹 Monstros</button>
@@ -559,6 +566,7 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
   <div id='fichasConteudo'></div>
 </div>
 
+<div id='painelEquip' class='painel so-mestre'><div id='equipConteudo'></div></div>
 <div id='painelLoja' class='painel'><div id='lojaConteudo'></div></div>
 <div id='painelMochila' class='painel'><h2 id='mochTitulo'>🎒 Mochila</h2><div id='mochilaConteudo'></div></div>
 
@@ -657,6 +665,18 @@ const CLASSES_LEGADO={
 const HABILIDADES={};
 Object.values(CLASSES_LEGADO).forEach(c=>c.habs.forEach(h=>{HABILIDADES[h.id]=h}));
 const LEGADO={guerra:['g1','g2','g3','g4'],bucaneiro:['b1','b2','b3','b4'],feiticeiro:['f1','f2','f3','f4']}; // herois antigos mantem as 4 habilidades da classe (so compatibilidade; nao aparecem na arvore nova)
+/* ======================= EQUIPAMENTOS =======================
+   Catalogo (so o mestre cria) em estado.equipamentos: {id,nome,ic,slot,duas,nivel,bonus:{forca,car,inte,con,agi},desc}.
+   Na mochila o item e {tipo:'equip',eq:id,qtd}; o heroi equipa em p.equip={slot:id}. Os bonus NUNCA entram em p[atributo]:
+   sao somados na hora (attrTot), entao equipar/tirar nao mexe nos pontos distribuidos. */
+const EQ_SLOTS=[['capacete','🪖','Capacete'],['peito','🥋','Peito'],['calca','👖','Calça'],['luva','🧤','Luva'],['arma','⚔️','Arma'],['mao2','🛡️','Segunda mão']];
+const eqLista=()=>estado.equipamentos||(estado.equipamentos=[]);
+const eqDe=id=>(estado.equipamentos||[]).find(x=>x.id===id)||null;
+function bonusEq(p,k){let n=0;const E=p&&p.equip;if(!E)return 0;Object.values(E).forEach(id=>{const d=eqDe(id);if(d&&d.bonus)n+=Math.round(+d.bonus[k])||0});return n}
+const attrTot=(p,k)=>((p&&p[k])||0)+bonusEq(p,k);
+const eqBonusTxt=d=>ATRIBUTOS.filter(([k])=>d&&d.bonus&&+d.bonus[k]).map(([k,r,ic])=>ic+' '+(d.bonus[k]>0?'+':'')+d.bonus[k]).join(' · ');
+const eqSlotNome=sl=>(EQ_SLOTS.find(x=>x[0]===sl)||[])[2]||sl;
+const eqResumo=d=>d?`${eqSlotNome(d.slot)}${d.duas?' (2 mãos)':''} · ${eqBonusTxt(d)||'sem bônus'} · nível mín. ${d.nivel||1}`:'';
 /* Linhas de habilidade (nao existem mais classes): em cada nivel o heroi escolhe 1 habilidade entre as 5 linhas. */
 const LINHAS={espada:{nome:'Espada',ic:'⚔️'},tiro:{nome:'Tiro',ic:'🔫'},magia:{nome:'Magia',ic:'🔮'},cura:{nome:'Cura',ic:'💚'},escudo:{nome:'Escudo',ic:'🛡️'}};
 /* Campos: attr = atributo principal; attrs = lista mostrada na ficha; f = dano; cura = cura; ef = efeito no inimigo;
@@ -769,12 +789,12 @@ const attrDe=h=>h&&(h.attr||Object.keys(h.f||(h.cura&&h.cura.f)||{})[0]||null);
    Limitado a 1/4 do tamanho do dado (d20 = ate +5) para nunca garantir sucesso; 1 natural continua falha critica e o critico
    depende so do dado. */
 function bonusCarisma(p,faces){
-  const n=Math.floor(Math.max(0,(p&&p.car)||0)/CAR_POR_BONUS);
+  const n=Math.floor(Math.max(0,p?attrTot(p,'car'):0)/CAR_POR_BONUS);
   return Math.min(n,Math.floor((faces||20)/4));
 }
 /* Texto do detalhe da rolagem: dado original e bonus separados. */
 const detalheRolo=rr=>{const a=[];if(rr.car)a.push('+'+rr.car+' Carisma');if(rr.rolo)a.push((rr.rolo>0?'+':'')+rr.rolo+' efeitos');return a.length?` (${a.join(', ')} = <b>${rr.ef}</b>)`:''};
-const soma=(p,f)=>Object.entries(f||{}).reduce((s,[k,v])=>s+(p[k]||0)*v,0);
+const soma=(p,f)=>Object.entries(f||{}).reduce((s,[k,v])=>s+attrTot(p,k)*v,0);
 const calcDano=(p,h)=>Math.max(1,Math.round(soma(p,h.f||{})+(h.fixo||0))); // fixo = dano base de habilidade de monstro
 /* Habilidades desbloqueadas do heroi = herdadas da classe antiga (se houver) + escolhidas nas etapas. */
 const habsDe=p=>[...[...(p.habsLegado||[]),...Object.values(p.escolhas||{})].map(id=>HABILIDADES[id]).filter(Boolean),...(p.habsM||[])]; // habsM = ataques cadastrados no monstro
@@ -854,7 +874,7 @@ async function rolar3D(r,faces,quem,dif,bonus){
 const fecharD=()=>$('mesaDado').classList.remove('on');
 
 function aba(n){
-  ['Arena','Meu','Mochila','Loja','Fichas','Cadastrar','Biblioteca','Monstros','Classes','Mestre'].forEach(x=>{$('painel'+x).classList.toggle('ativo',x===n);$('aba'+x).classList.toggle('ativa',x===n)});
+  ['Arena','Meu','Mochila','Loja','Fichas','Equip','Cadastrar','Biblioteca','Monstros','Classes','Mestre'].forEach(x=>{$('painel'+x).classList.toggle('ativo',x===n);$('aba'+x).classList.toggle('ativa',x===n)});
   cancelar();desenhar();
 }
 
@@ -967,6 +987,7 @@ function desenhar(){
   renderMeu();
   renderMochila();
   renderFichas();
+  renderEquip();
   marcarMira();
 }
 
@@ -1417,7 +1438,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');
   if(!b){if(mira&&!e.target.closest('.topo'))cancelar();return}
   const a=b.dataset.act,t=b.dataset.t,id=+b.dataset.id,p=t&&id?buscar(t,id):null;
-  if(PAPEL==='jogador'&&!['cancelar','criarmeu','vincularmeu','passarminhavez','sairsala','moadd','moremover','chatalt','chatenviar','rolarjogador','fecharaviso','usaritem','attrmais','confirmarpts','desfazerpts','fichaaba','comprar','escolher','habver','habfechar','habok','testeabrir','testeenviar','testecancelar'].includes(a))return;
+  if(PAPEL==='jogador'&&!['cancelar','criarmeu','vincularmeu','passarminhavez','sairsala','moadd','moremover','chatalt','chatenviar','rolarjogador','fecharaviso','usaritem','attrmais','confirmarpts','desfazerpts','fichaaba','comprar','escolher','habver','habfechar','habok','eqslot','equipar','desequipar','testeabrir','testeenviar','testecancelar'].includes(a))return;
   if(onlineAct(a,b))return;
   if(a==='add'){addPersonagem(t);return}
   if(a==='curar'&&p){p.vida=p.vidaMax;if(p.estMax!==undefined)p.est=p.estMax;p.status=[];somCura()}
@@ -1494,11 +1515,15 @@ const XP_FONTES={manual:'mestre',missao:'missão',combate:'combate',objetivo:'ob
 
 /* Garante os campos novos em herois antigos e migra a classe antiga para 'habsLegado' (uma unica vez). */
 /* Vida maxima automatica pela Constituicao. Ganhar vida maxima cura a diferenca; perder limita a vida atual. */
-const vidaMaxDe=p=>VIDA_BASE+VIDA_POR_CON*Math.max(0,p.con||0);
+const vidaMaxDe=p=>VIDA_BASE+VIDA_POR_CON*Math.max(0,attrTot(p,'con'));
 function recalcVida(p){
-  const novo=vidaMaxDe(p);if(p.vidaMax===novo)return;
-  const dif=novo-(p.vidaMax||0);p.vidaMax=novo;
-  p.vida=dif>0?(p.vida>0?p.vida+dif:0):Math.min(p.vida,novo);
+  /* Pontos de Constituicao curam a diferenca; o bonus de equipamento so muda o maximo (evita equipar/tirar para curar). */
+  const eqV=VIDA_POR_CON*bonusEq(p,'con'),baseNovo=VIDA_BASE+VIDA_POR_CON*Math.max(0,p.con||0),novo=Math.max(1,baseNovo+eqV);
+  if(p.vidaMax===novo&&(p.vidaEq||0)===eqV)return;
+  const antes=p.vidaMax||0,antEq=p.vidaEq||0,difBase=baseNovo-(antes-antEq);
+  p.vidaMax=novo;p.vidaEq=eqV;
+  if(difBase>0&&p.vida>0)p.vida+=difBase;
+  p.vida=Math.min(p.vida,novo);
 }
 function normalizarHeroi(p){
   recalcVida(p);
@@ -1578,9 +1603,29 @@ function executarFicha(p,acao,a,porJogador){
       if(it.estoque<qtd)return {erro:it.estoque>0?'Só restam '+it.estoque+' em estoque.':'Item esgotado.'};
       const m=copiaM(p.id),custo=it.preco*qtd;
       if((m.din||0)<custo)return {erro:'Dinheiro insuficiente: custa '+custo+' e você tem '+(m.din||0)+'.'};
-      if(!colocarItemM(m,{cons:it.cons,nome:it.nome},qtd))return {erro:'Item inválido.'};
+      if(!colocarItemM(m,{cons:it.cons,eq:it.eq,nome:it.nome},qtd))return {erro:'Item inválido.'};
       m.din=(m.din||0)-custo;it.estoque-=qtd;salvarMochila(p.id,m);
       logar(`🛒 ${esc(p.nome)} comprou ${qtd}x <b>${esc(it.nome)}</b> por ${custo} 💰.`);
+      return {};
+    }
+    case 'equipar':{
+      const d=eqDe(+a.eq);if(!d)return {erro:'Equipamento inexistente.'};
+      if(!(mochilaDe(p.id).itens||[]).some(x=>x.tipo==='equip'&&x.eq===d.id&&x.qtd>0))return {erro:'Você não tem esse equipamento na mochila.'};
+      if((p.nivel||1)<(d.nivel||1))return {erro:'🔒 '+d.nome+' exige nível '+(d.nivel||1)+' (você é nível '+(p.nivel||1)+').'};
+      if(porJogador&&VEZ===p.id)return {erro:'Troque de equipamento fora da sua vez.'};
+      p.equip=p.equip||{};
+      if(d.slot==='mao2'&&p.equip.arma){const w=eqDe(p.equip.arma);if(w&&w.duas)return {erro:'Sua arma ocupa as duas mãos. Tire a arma antes.'}}
+      if(d.slot==='arma'&&d.duas)delete p.equip.mao2;
+      p.equip[d.slot]=d.id;recalcVida(p);
+      logar(`🎽 ${esc(p.nome)} equipou <b>${esc(d.nome)}</b>.`);
+      return {};
+    }
+    case 'desequipar':{
+      const sl=String(a.slot),d=eqDe((p.equip||{})[sl]);
+      if(!EQ_SLOTS.some(x=>x[0]===sl)||!(p.equip||{})[sl])return {erro:'Não há nada equipado aí.'};
+      if(porJogador&&VEZ===p.id)return {erro:'Troque de equipamento fora da sua vez.'};
+      delete p.equip[sl];recalcVida(p);
+      logar(`🎽 ${esc(p.nome)} tirou ${d?'<b>'+esc(d.nome)+'</b>':'um equipamento'}.`);
       return {};
     }
     case 'usarItem':{
@@ -1626,13 +1671,17 @@ const idsAlvoHeroi=v=>v==='todos'?estado.jogadores.map(p=>p.id):[+v];
 /* Adiciona (ou soma a quantidade de) um item na mochila. spec: {cons} para consumivel do catalogo ou {nome} para item comum. */
 /* Coloca (ou soma) um item numa mochila ja copiada. spec: {cons} (consumivel do catalogo) ou {nome} (item comum). Usada por darItem e pela loja. */
 function colocarItemM(m,spec,qtd){
-  if(spec.cons){
+  if(spec.eq){
+    const d=eqDe(spec.eq);if(!d)return false;
+    const it=m.itens.find(x=>x.tipo==='equip'&&x.eq===d.id);
+    if(it)it.qtd+=qtd;else m.itens.push({nome:d.nome,qtd,obs:'',tipo:'equip',eq:d.id});
+  }else if(spec.cons){
     const def=CONSUMIVEIS.find(c=>c.id===spec.cons);if(!def)return false;
     const it=m.itens.find(x=>x.tipo==='consumivel'&&x.cons===def.id);
     if(it)it.qtd+=qtd;else m.itens.push({nome:def.nome,qtd,obs:'',tipo:'consumivel',cons:def.id});
   }else{
     const nome=String(spec.nome||'').trim().slice(0,80);if(!nome)return false;
-    const it=m.itens.find(x=>x.tipo!=='consumivel'&&x.nome===nome);
+    const it=m.itens.find(x=>x.tipo!=='consumivel'&&x.tipo!=='equip'&&x.nome===nome);
     if(it)it.qtd+=qtd;else m.itens.push({nome,qtd,obs:'',tipo:'permanente'});
   }
   return true;
@@ -1765,12 +1814,12 @@ function monParaArena(id){
    o jogador compra pela acao 'comprar' (executarFicha), que debita o dinheiro da mochila (campo din) e baixa o estoque. */
 const lojaItens=()=>estado.lojaItens||(estado.lojaItens=[]);
 function lojaCard(it,eu){
-  const mestre=PAPEL==='mestre',esg=it.estoque<=0,def=it.cons&&CONSUMIVEIS.find(c=>c.id===it.cons);
+  const mestre=PAPEL==='mestre',esg=it.estoque<=0,def=it.cons&&CONSUMIVEIS.find(c=>c.id===it.cons),eqd=it.eq&&eqDe(it.eq);
   const din=eu?mochilaDe(eu.id).din||0:0;
   const acao=mestre
     ?`<div class='acoes'><label>Preço <input type='number' min='0' data-lj='preco:${it.id}' value='${it.preco}'></label> <label>Estoque <input type='number' min='0' data-lj='estoque:${it.id}' value='${it.estoque}'></label> <button class='btn peq verm' data-act='lojadel' data-id='${it.id}'>🗑️ Tirar da loja</button></div>`
     :`<div class='acoes'><b>${it.preco} 💰</b> <small>· em estoque: ${it.estoque}</small> <input type='number' min='1' max='${Math.max(1,it.estoque)}' value='1' id='lq${it.id}'> <button class='btn peq' data-act='comprar' data-id='${it.id}' ${(esg||estado.lojaAberta===false||!eu)?'disabled':''}>${esg?'Esgotado':'🛒 Comprar'}</button></div>`;
-  return `<div class='mon-card loja-card'><div class='mini' style='background:#3a2a66;font-size:28px'>${it.ic||'📦'}</div><div style='flex:1'><b>${esc(it.nome)}</b>${def?`<br><small>${esc(def.desc)}</small>`:''}${mestre?`<br><small>${it.preco} 💰 · estoque ${it.estoque}</small>`:''}${acao}</div></div>`;
+  return `<div class='mon-card loja-card'><div class='mini' style='background:#3a2a66;font-size:28px'>${it.ic||'📦'}</div><div style='flex:1'><b>${esc(it.nome)}</b>${def?`<br><small>${esc(def.desc)}</small>`:''}${eqd?`<br><small>🎽 ${esc(eqResumo(eqd))}</small>${eqd.desc?`<br><small>${esc(eqd.desc)}</small>`:''}${(!mestre&&eu&&(eu.nivel||1)<(eqd.nivel||1))?`<br><small style='color:#8a1f1f'>🔒 Você só poderá usar a partir do nível ${eqd.nivel} (pode comprar agora e guardar).</small>`:''}`:''}${mestre?`<br><small>${it.preco} 💰 · estoque ${it.estoque}</small>`:''}${acao}</div></div>`;
 }
 function renderLoja(force){
   const el=$('lojaConteudo');if(!el)return;
@@ -1778,25 +1827,25 @@ function renderLoja(force){
   const ae=document.activeElement;
   if(!force&&ae&&el.contains&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;
   let eu=meu;if(mestre){const sel=$('lojaComo');eu=estado.jogadores.find(x=>x.id===+(sel&&sel.value))||estado.jogadores[0]||null}
-  const sig=JSON.stringify([estado.lojaItens,estado.lojaAberta,mestre,eu&&eu.id,eu?mochilaDe(eu.id).din:0,estado.jogadores.map(x=>x.id)]);
+  const sig=JSON.stringify([estado.lojaItens,estado.equipamentos,eu&&eu.nivel,estado.lojaAberta,mestre,eu&&eu.id,eu?mochilaDe(eu.id).din:0,estado.jogadores.map(x=>x.id)]);
   if(!force&&sig===sigLoja)return;
   sigLoja=sig;
   const itens=lojaItens();
   const topo=`<div class='cad'><div class='ctopo'><b>🏪 Loja do Navio</b><small>${estado.lojaAberta===false?'🔒 Fechada pelo mestre':'Aberta para compras'}</small></div></div>`;
   const dinheiro=eu?`<div class='dica cad' style='text-align:center;font-size:16px'>💰 ${mestre?'Comprando como <select id="lojaComo" onchange="renderLoja(true)">'+estado.jogadores.map(x=>`<option value='${x.id}' ${x.id===eu.id?'selected':''}>${esc(x.nome)}</option>`).join('')+'</select> · ':'Seu dinheiro: '}<b>${mochilaDe(eu.id).din||0}</b></div>`:(PAPEL==='jogador'?`<div class='vazio'>Crie ou assuma um herói para comprar.</div>`:'');
   const admin=mestre?`<div class='form cad'><div class='sec'>➕ Colocar item à venda</div>
-    <div class='l'><div><small>Item do catálogo</small><select id='lojaCat'><option value=''>— item comum (digite o nome) —</option>${CONSUMIVEIS.map(c=>`<option value='${c.id}'>${c.ic} ${esc(c.nome)}</option>`).join('')}</select></div><div><small>Nome (item comum)</small><input id='lojaNome' maxlength='60'></div></div>
+    <div class='l'><div><small>Item do catálogo</small><select id='lojaCat'><option value=''>— item comum (digite o nome) —</option>${CONSUMIVEIS.map(c=>`<option value='${c.id}'>${c.ic} ${esc(c.nome)}</option>`).join('')}${eqLista().length?`<optgroup label='Equipamentos'>${eqLista().map(d=>`<option value='eq:${d.id}'>${d.ic} ${esc(d.nome)} (nível ${d.nivel||1})</option>`).join('')}</optgroup>`:''}</select></div><div><small>Nome (item comum)</small><input id='lojaNome' maxlength='60'></div></div>
     <div class='l'><div><small>Preço (💰)</small><input id='lojaPreco' type='number' min='0' value='10'></div><div><small>Quantidade disponível</small><input id='lojaQtd' type='number' min='1' value='5'></div></div>
     <button class='btn' data-act='lojaadd'>➕ Colocar à venda</button>
     <label style='display:block;margin-top:8px'><input type='checkbox' data-lj='aberta' ${estado.lojaAberta===false?'':'checked'}> Loja aberta para os jogadores</label></div>`:'';
   el.innerHTML=topo+dinheiro+admin+(itens.map(it=>lojaCard(it,eu)).join('')||`<div class='vazio'>A loja está vazia.${mestre?' Coloque itens à venda acima.':''}</div>`);
 }
 function lojaAdicionar(){
-  const cons=$('lojaCat').value,nome=String($('lojaNome').value||'').trim().slice(0,60),preco=Math.max(0,Math.floor(+$('lojaPreco').value)||0),qtd=Math.max(1,Math.floor(+$('lojaQtd').value)||1);
-  const def=CONSUMIVEIS.find(c=>c.id===cons);
-  if(!def&&!nome){toast('Escolha um item do catálogo ou digite o nome.');return}
-  const L=lojaItens(),ex=L.find(x=>def?x.cons===def.id:(!x.cons&&x.nome===nome));
-  if(ex){ex.preco=preco;ex.estoque+=qtd}else L.push({id:Date.now(),nome:def?def.nome:nome,ic:def?def.ic:'📦',cons:def?def.id:undefined,preco,estoque:qtd});
+  const v=$('lojaCat').value,nome=String($('lojaNome').value||'').trim().slice(0,60),preco=Math.max(0,Math.floor(+$('lojaPreco').value)||0),qtd=Math.max(1,Math.floor(+$('lojaQtd').value)||1);
+  const eqd=String(v).startsWith('eq:')?eqDe(+String(v).slice(3)):null,def=eqd?null:CONSUMIVEIS.find(c=>c.id===v);
+  if(!def&&!eqd&&!nome){toast('Escolha um item do catálogo ou digite o nome.');return}
+  const L=lojaItens(),ex=L.find(x=>eqd?x.eq===eqd.id:(def?x.cons===def.id:(!x.cons&&!x.eq&&x.nome===nome)));
+  if(ex){ex.preco=preco;ex.estoque+=qtd}else L.push({id:Date.now(),nome:eqd?eqd.nome:(def?def.nome:nome),ic:eqd?eqd.ic:(def?def.ic:'📦'),cons:def?def.id:undefined,eq:eqd?eqd.id:undefined,preco,estoque:qtd});
   $('lojaNome').value='';salvar();renderLoja(true);toast('🏪 Item colocado à venda!');
 }
 /* Edicao inline do mestre (preco, estoque, loja aberta/fechada). */
@@ -1808,16 +1857,80 @@ function editarLoja(el){
   it[k]=Math.max(0,Math.floor(+el.value)||0);salvar();renderLoja(true);
 }
 
+/* ======================= ABA EQUIPAMENTOS (so o mestre) ======================= */
+let eqEdit=null,sigEquip='';
+function renderEquip(force){
+  const el=$('equipConteudo');if(!el||PAPEL!=='mestre')return;
+  const ae=document.activeElement;
+  if(!force&&ae&&el.contains&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;
+  const sig=JSON.stringify([estado.equipamentos,estado.jogadores.map(x=>x.id+x.nome),eqEdit]);
+  if(!force&&sig===sigEquip)return;
+  sigEquip=sig;
+  const L=eqLista(),ed=eqEdit?eqDe(eqEdit):null,b=(ed&&ed.bonus)||{};
+  const num=(id,r,k)=>`<div><small>${r}</small><input id='${id}' type='number' value='${+b[k]||0}'></div>`;
+  const form=`<div class='form'><b>${ed?'✏️ Editando equipamento':'⚒️ Criar equipamento'}</b>
+    <div class='l'><div style='flex:3'><small>Nome</small><input id='eqNome' maxlength='60' value='${escA(ed?ed.nome:'')}'></div><div style='flex:.6;min-width:70px'><small>Ícone</small><input id='eqIc' maxlength='4' value='${escA(ed?ed.ic:'')}' placeholder='🪖'></div>
+      <div><small>Onde equipa</small><select id='eqSlot'>${EQ_SLOTS.map(([sl,ic,nm])=>`<option value='${sl}' ${ed&&ed.slot===sl?'selected':''}>${ic} ${nm}</option>`).join('')}</select></div></div>
+    <div class='l'>${ATRIBUTOS.map(([k,r,ic])=>num('eq_'+k,ic+' '+r,k)).join('')}</div>
+    <small>Os bônus valem enquanto estiver equipado. Pode usar número negativo (item amaldiçoado).</small>
+    <div class='l'><div><small>🔒 Nível mínimo para usar</small><input id='eqNivel' type='number' min='1' value='${ed?ed.nivel||1:1}'></div>
+      <div style='display:flex;align-items:end'><label style='font-size:14px'><input id='eqDuas' type='checkbox' style='width:auto' ${ed&&ed.duas?'checked':''}> Arma de duas mãos (ocupa a segunda mão)</label></div></div>
+    <div class='l'><div style='flex:3'><small>Descrição</small><input id='eqDesc' maxlength='200' value='${escA(ed?ed.desc||'':'')}'></div></div>
+    <button class='btn' data-act='eqsalvar'>💾 ${ed?'Salvar alterações':'Salvar equipamento'}</button>${ed?` <button class='btn peq azul' data-act='eqcancelar'>Cancelar edição</button>`:''}</div>`;
+  const lista=`<div class='form'><b>📚 Equipamentos criados</b>
+    <div class='l'><div><small>Entregar para</small><select id='eqHer'><option value='todos'>Todos os heróis</option>${estado.jogadores.map(p=>`<option value='${p.id}'>${esc(p.nome)}</option>`).join('')}</select></div></div>
+    ${L.map(d=>`<div class='mi eqrow'><span class='mtag' style='font-size:24px'>${d.ic}</span><div class='eqnome'><b>${esc(d.nome)}</b><br><small>${esc(eqResumo(d))}</small>${d.desc?`<br><small><i>${esc(d.desc)}</i></small>`:''}</div><button class='btn peq' data-act='eqdar' data-id='${d.id}'>🎁 Entregar</button><button class='btn peq azul' data-act='eqeditar' data-id='${d.id}'>✏️</button><button class='x' data-act='eqdel' data-id='${d.id}' title='Excluir'>✖</button></div>`).join('')||`<div class='vazio'>Nenhum equipamento criado ainda.</div>`}
+    <small>Para vender na loja: aba Loja → "Colocar item à venda" → escolha o equipamento.</small></div>`;
+  el.innerHTML=`<h2>⚒️ Equipamentos</h2>`+form+lista;
+}
+function eqSalvar(){
+  const nome=String($('eqNome').value||'').trim().slice(0,60);
+  if(!nome){toast('Dê um nome ao equipamento.');return}
+  const slot=$('eqSlot').value,pad=(EQ_SLOTS.find(x=>x[0]===slot)||[])[1]||'🎽';
+  const bonus={};ATRIBUTOS.forEach(([k])=>{bonus[k]=Math.max(-50,Math.min(50,Math.round(+$('eq_'+k).value)||0))});
+  const d={id:eqEdit||Date.now(),nome,ic:(String($('eqIc').value||'').trim()||pad).slice(0,4),slot,duas:slot==='arma'&&$('eqDuas').checked,nivel:Math.max(1,Math.floor(+$('eqNivel').value)||1),bonus,desc:String($('eqDesc').value||'').trim().slice(0,200)};
+  const L=eqLista(),i=L.findIndex(x=>x.id===d.id);if(i>=0)L[i]=d;else L.push(d);
+  const novo=!eqEdit;eqEdit=null;salvar();renderEquip(true);desenhar();
+  toast(novo?'⚒️ Equipamento criado!':'💾 Equipamento atualizado!');
+}
+function eqApagar(id){
+  const d=eqDe(id);if(!d)return;
+  if(!confirm('Excluir "'+d.nome+'"? Ele some do catálogo e da loja, e os heróis perdem o bônus.'))return;
+  estado.equipamentos=eqLista().filter(x=>x.id!==id);
+  estado.lojaItens=lojaItens().filter(x=>x.eq!==id);
+  estado.jogadores.forEach(h=>{if(h.equip)Object.keys(h.equip).forEach(sl=>{if(h.equip[sl]===id)delete h.equip[sl]});recalcVida(h)});
+  if(eqEdit===id)eqEdit=null;
+  salvar();renderEquip(true);renderLoja(true);desenhar();
+}
+function eqEntregar(id){
+  const d=eqDe(id);if(!d)return;
+  const ids=idsAlvoHeroi(($('eqHer')||{}).value||'todos');
+  const ok=ids.filter(h=>darItem(h,{eq:id,qtd:1}));
+  if(!ok.length){toast('Nenhum herói para receber.');return}
+  logar(`🎁 Mestre entregou <b>${esc(d.nome)}</b> a ${ok.map(h=>esc((estado.jogadores.find(p=>p.id===h)||{}).nome)).join(', ')}.`);
+  salvar();renderMochila(true);desenhar();toast('🎁 '+d.nome+' entregue!');
+}
+
 /* ======================= MOCHILA ======================= */
 const mochilaDe=id=>{
   const m=ONLINE?MOCH[id]:(estado.mochilas||{})[id],h=estado.jogadores.find(p=>p.id===id);
   return Object.assign({din:(h&&h.din)||0,itens:[],acess:[],notas:''},m||{});
 };
 const copiaM=id=>JSON.parse(JSON.stringify(mochilaDe(id)));
+/* Se o heroi nao tem mais o item na mochila (removido pelo mestre), ele sai das casas de equipamento. So age quando a mochila ja foi carregada. */
+function reconciliarEquip(h){
+  if(!h.equip||!Object.keys(h.equip).length)return false;
+  const raw=ONLINE?MOCH[h.id]:(estado.mochilas||{})[h.id];if(!raw)return false;
+  const m=mochilaDe(h.id);let ch=false;
+  Object.entries(h.equip).forEach(([sl,id])=>{if(!(m.itens||[]).some(x=>x.tipo==='equip'&&x.eq===id&&x.qtd>0)){delete h.equip[sl];ch=true}});
+  if(ch)recalcVida(h);return ch;
+}
+function reconciliarTodos(){let ch=false;estado.jogadores.forEach(h=>{if(reconciliarEquip(h))ch=true});if(ch){salvar();desenhar()}}
 const podeMochila=id=>PAPEL==='mestre'||(meuHeroi()&&meuHeroi().id===id);
 function salvarMochila(id,dados){
-  if(!ONLINE){estado.mochilas=estado.mochilas||{};estado.mochilas[id]=dados;salvar();return}
+  if(!ONLINE){estado.mochilas=estado.mochilas||{};estado.mochilas[id]=dados;salvar();reconciliarTodos();return}
   MOCH[id]=dados;pendM[id]=true;
+  if(PAPEL==='mestre')reconciliarTodos();
   clearTimeout(salvarMochila['t'+id]);
   salvarMochila['t'+id]=setTimeout(()=>{
     const h=estado.jogadores.find(p=>p.id===id),dono=PAPEL==='jogador'?MEUUID:(h&&h.dono||null);
@@ -1832,7 +1945,7 @@ function editarMochila(el){
   else if(c==='notas')m.notas=String(el.value).slice(0,4000);
   else{
     const it=(m[el.dataset.l]||[])[+el.dataset.i];if(!it)return;
-    if(PAPEL==='jogador'&&it.tipo==='consumivel'&&c!=='obs')return;
+    if(PAPEL==='jogador'&&(it.tipo==='consumivel'||it.tipo==='equip')&&c!=='obs')return;
     if(c==='tipo'){if(PAPEL!=='mestre')return;it.tipo=el.value==='consumivel'?'consumivel':'permanente';if(it.tipo==='consumivel'&&!it.cons)it.cons=CONSUMIVEIS[0].id;redesenhar=true}
     else if(c==='cons'){const d=CONSUMIVEIS.find(x=>x.id===el.value);if(PAPEL!=='mestre'||!d)return;it.cons=d.id;if(!it.nome)it.nome=d.nome;redesenhar=true}
     else it[c]=c==='qtd'?Math.max(0,parseInt(el.value)||0):String(el.value).slice(0,80);
@@ -1847,7 +1960,7 @@ function aoReceberMochilas(o){
     let dados;try{dados=JSON.parse(d.dados)}catch(e){return}
     if(JSON.stringify(MOCH[id])!==JSON.stringify(dados)){MOCH[id]=dados;mudou=true}
   });
-  if(mudou){renderMochila(false);renderLoja()}
+  if(mudou){if(PAPEL==='mestre')reconciliarTodos();renderMochila(false);renderLoja()}
 }
 function mochilaHTML(id){
   const m=mochilaDe(id),h=estado.jogadores.find(p=>p.id===id);
@@ -1857,6 +1970,12 @@ function mochilaHTML(id){
     const cons=l==='itens'&&it.tipo==='consumivel',def=cons?CONSUMIVEIS.find(c=>c.id===it.cons):null,ro=(PAPEL==='jogador'&&cons)?' readonly':'';
     const at=`data-mo='${id}' data-l='${l}' data-i='${i}'`;
     const tipoSel=(l==='itens'&&PAPEL==='mestre')?`<select class='mt' ${at} data-c='tipo'><option value='permanente' ${cons?'':'selected'}>Permanente</option><option value='consumivel' ${cons?'selected':''}>Consumível</option></select>${cons?`<select class='mt' ${at} data-c='cons'>${CONSUMIVEIS.map(c=>`<option value='${c.id}' ${c.id===it.cons?'selected':''}>${c.ic} ${esc(c.nome)}</option>`).join('')}</select>`:''}`:'';
+    if(l==='itens'&&it.tipo==='equip'){ /* equipamento: nome/qtd vem do catalogo do mestre; o jogador so equipa/tira */
+      const d=eqDe(it.eq),on=!!d&&(h.equip||{})[d.slot]===d.id,okNv=!!d&&(h.nivel||1)>=(d.nivel||1);
+      const bt=!d?`<small>(equipamento removido pelo mestre)</small>`:(on?`<span class='eq-on'>✅ Equipado</span><button class='btn peq verm' data-act='desequipar' data-id='${id}' data-slot='${d.slot}'>Tirar</button>`:`<button class='btn peq' data-act='equipar' data-id='${id}' data-eq='${d.id}' ${okNv?'':'disabled'} title='${okNv?'':escA('Exige nível '+d.nivel)}'>${okNv?'🎽 Equipar':'🔒 Nível '+d.nivel}</button>`);
+      const qt=PAPEL==='mestre'?`<input class='mq' type='number' value='${it.qtd}' ${at} data-c='qtd'>`:(it.qtd>1?`<b>×${it.qtd}</b>`:'');
+      return `<div class='mi eqrow ${on?'on':''}'><span class='mtag' style='font-size:24px'>${d?d.ic:'📦'}</span><div class='eqnome'><b>${esc(d?d.nome:it.nome)}</b><br><small>${esc(eqResumo(d))}</small>${d&&d.desc?`<br><small><i>${esc(d.desc)}</i></small>`:''}</div>${qt}${bt}${PAPEL==='mestre'?`<button class='x' data-act='moremover' data-id='${id}' data-l='${l}' data-i='${i}' title='Remover'>✖</button>`:''}</div>`;
+    }
     return `<div class='mi ${cons?'cons':''}'><span class='mtag'>${cons?(def?def.ic:'🧪'):'📦'}</span><input class='mn' placeholder='Nome' value='${escA(it.nome)}' ${at} data-c='nome'${ro}><input class='mq' type='number' value='${it.qtd}' ${at} data-c='qtd'${ro}><input class='mob' placeholder='Observação' value='${escA(it.obs||'')}' ${at} data-c='obs'>${tipoSel}${cons?`<button class='btn peq' data-act='usaritem' data-id='${id}' data-i='${i}' ${it.qtd>0?'':'disabled'} title='${escA(def?def.desc:'')}'>Usar</button>`:''}<button class='x' data-act='moremover' data-id='${id}' data-l='${l}' data-i='${i}' title='Remover'>✖</button></div>`;
   }).join('');
   return `<div class='ficha mochila'><div class='cab'><div class='mini' ${fotoStyle(h)}>${emoji(h,false)}</div><div><b>${esc(h.nome)}</b><br><small>${iconeDe(h)} Nv ${h.nivel||1}${h.espec?' · '+esc(h.espec):''}</small></div></div>
@@ -1870,7 +1989,7 @@ function idMochilaAtual(){
   if(!estado.jogadores.some(p=>p.id===mochSel))mochSel=estado.jogadores.length?estado.jogadores[0].id:null;
   return mochSel;
 }
-function sigMochila(){const id=idMochilaAtual();return id+'|'+JSON.stringify(mochilaDe(id))+'|'+(PAPEL==='mestre'?estado.jogadores.map(p=>p.id+p.nome).join(','):'')}
+function sigMochila(){const id=idMochilaAtual(),hh=estado.jogadores.find(p=>p.id===id)||{};return id+'|'+JSON.stringify([mochilaDe(id),hh.equip,hh.nivel,estado.equipamentos])+'|'+(PAPEL==='mestre'?estado.jogadores.map(p=>p.id+p.nome).join(','):'')}
 function renderMochila(force){
   const el=$('mochilaConteudo');if(!el)return;
   const id=idMochilaAtual(),sig=sigMochila();
@@ -1972,7 +2091,7 @@ function onlineAct(a,b){
   switch(a){
     case 'fecharaviso':$('avisoRegras').classList.remove('on');return true;
     case 'moadd':{const id=+b.dataset.id,l=b.dataset.l;if(!podeMochila(id))return true;const m=copiaM(id);m[l].push({nome:'',qtd:1,obs:'',tipo:'permanente'});salvarMochila(id,m);renderMochila(true);return true}
-    case 'moremover':{const id=+b.dataset.id,l=b.dataset.l;if(!podeMochila(id))return true;const m=copiaM(id);m[l].splice(+b.dataset.i,1);salvarMochila(id,m);renderMochila(true);return true}
+    case 'moremover':{const id=+b.dataset.id,l=b.dataset.l;if(!podeMochila(id))return true;const m=copiaM(id);if(PAPEL==='jogador'&&(m[l][+b.dataset.i]||{}).tipo==='equip')return true;m[l].splice(+b.dataset.i,1);salvarMochila(id,m);renderMochila(true);return true}
     case 'mochsel':mochSel=+b.dataset.id;renderMochila(true);return true;
     case 'fichasel':fichaSel=+b.dataset.id;renderFichas(true);return true;
     case 'testeabrir':abrirTeste(+b.dataset.id);return true;
@@ -2007,6 +2126,14 @@ function onlineAct(a,b){
       fichaAcao(p.id,'confirmarPontos',{distr:pd});delete pontosPend[p.id];sigMeu='';sigFicha='';renderMeu();renderFichas(true);return true}
     case 'desfazerpts':delete pontosPend[+b.dataset.id];sigMeu='';sigFicha='';renderMeu();renderFichas(true);return true;
     case 'resetpts':if(confirm('Redefinir todos os pontos distribuídos? Os pontos voltam para você distribuir de novo.'))fichaAcao(+b.dataset.id,'resetPontos');return true;
+    case 'eqslot':eqSlotAbrir(+b.dataset.id,b.dataset.slot);return true;
+    case 'equipar':fichaAcao(+b.dataset.id,'equipar',{eq:+b.dataset.eq});return true;
+    case 'desequipar':habModalFechar();fichaAcao(+b.dataset.id,'desequipar',{slot:b.dataset.slot});return true;
+    case 'eqsalvar':eqSalvar();return true;
+    case 'eqeditar':eqEdit=+b.dataset.id;renderEquip(true);return true;
+    case 'eqcancelar':eqEdit=null;renderEquip(true);return true;
+    case 'eqdel':eqApagar(+b.dataset.id);return true;
+    case 'eqdar':eqEntregar(+b.dataset.id);return true;
     case 'habver':habModalAbrir(+b.dataset.id,+b.dataset.n,b.dataset.h);return true;
     case 'habfechar':habModalFechar();return true;
     case 'habok':{if(!habSel)return true;const hs=habSel;habModalFechar();fichaAcao(hs.id,'escolher',{n:hs.n,h:hs.h});return true}
@@ -2297,6 +2424,17 @@ function habModalAbrir(heroiId,n,hid){
   </div>`;
   $('habModal').classList.add('on');
 }
+function eqSlotAbrir(heroiId,sl){
+  const p=estado.jogadores.find(x=>x.id===heroiId);if(!p)return;
+  const d=eqDe((p.equip||{})[sl]);if(!d)return;
+  habSel=null;
+  $('habModal').innerHTML=`<div class='hmback' data-act='habfechar'></div><div class='hmcard'>
+    <div class='hmtop'><span class='hmic'>${d.ic}</span><div><b class='hmnome'>${esc(d.nome)}</b><br><small>${esc(eqSlotNome(d.slot))}${d.duas?' · duas mãos':''} · nível mín. ${d.nivel||1}</small></div></div>
+    ${d.desc?`<p class='hmdesc'>${esc(d.desc)}</p>`:''}
+    <div class='hmef'><b>Bônus enquanto equipado</b><br>${esc(eqBonusTxt(d))||'Nenhum'}</div>
+    <div class='hmbtns'><button class='btn verm' data-act='desequipar' data-id='${heroiId}' data-slot='${sl}'>Tirar equipamento</button><button class='btn azul' data-act='habfechar'>Fechar</button></div></div>`;
+  $('habModal').classList.add('on');
+}
 function habModalFechar(){habSel=null;const m=$('habModal');if(m){m.classList.remove('on');m.innerHTML=''}}
 function fichaHeroiHTML(p,modo){
   const id=p.id,mestre=modo==='mestre',pt=pontosDe(p),d=`data-t='jogadores' data-id='${id}'`;
@@ -2321,11 +2459,10 @@ function fichaHeroiHTML(p,modo){
   }).join('');
   const legado=(p.habsLegado||[]).map(h=>HABILIDADES[h]).filter(Boolean);
   /* Casas de habilidade ao redor do retrato (so mostram o que o heroi ja possui) */
-  const total=Math.max(8,tem.length+(tem.length%2)),meio=total/2;
-  const slot=i=>tem[i]?`<div class='slot' title='${escA(tem[i].nome)}'>${tem[i].ic}</div>`:`<div class='slot vazio'></div>`;
-  const lado=(ini,fim)=>Array.from({length:fim-ini},(_,k)=>slot(ini+k)).join('');
+  const slotsHab=[1,2,3,4,5].map(n=>{const h=HABILIDADES[(p.escolhas||{})[n]];return h?`<div class='slot' title='${escA(h.nome)} (nível ${n})'>${h.ic}</div>`:`<div class='slot vazio' title='Nível ${n}: ainda sem habilidade'></div>`}).join('');
+  const slotsEq=EQ_SLOTS.map(([sl,ic,nm])=>{const d=eqDe((p.equip||{})[sl]);return d?`<div class='slot eq' data-act='eqslot' data-id='${id}' data-slot='${sl}' title='${escA(d.nome)}'>${d.ic}</div>`:`<div class='slot vazio' title='${nm}: vazio'><span class='eqf'>${ic}</span></div>`}).join('');
   /* Atributos com + e − (o − devolve um ponto ja distribuido) */
-  const attrs2=ATRIBUTOS.map(([k,rot,ic])=>`<div class='at'><span>${ic}</span><span class='an'>${rot}<br><small style='opacity:.75'>${k==='car'?'Sorte: +'+bonusCarisma(p,20)+' nos dados (+1 a cada 5)':k==='con'?'Vida máx. '+p.vidaMax:EFEITO_ATRIB[k]}</small></span>${(p.distr||{})[k]?`<small class='ad'>+${p.distr[k]}</small>`:''}${pend[k]?`<small class='ad' style='color:#c98a00' title='Ainda não confirmado'>+${pend[k]}?</small>`:''}<b class='av'>${(p[k]||0)+(pend[k]||0)}</b><button class='mais' data-act='attrmais' data-id='${id}' data-a='${k}' ${livres>0?'':'disabled'} title='Escolher 1 ponto (confirme depois)'>+</button></div>`).join('');
+  const attrs2=ATRIBUTOS.map(([k,rot,ic])=>`<div class='at'><span>${ic}</span><span class='an'>${rot}<br><small style='opacity:.75'>${k==='car'?'Sorte: +'+bonusCarisma(p,20)+' nos dados (+1 a cada 5)':k==='con'?'Vida máx. '+p.vidaMax:EFEITO_ATRIB[k]}</small></span>${(p.distr||{})[k]?`<small class='ad'>+${p.distr[k]}</small>`:''}${pend[k]?`<small class='ad' style='color:#c98a00' title='Ainda não confirmado'>+${pend[k]}?</small>`:''}${bonusEq(p,k)?`<small class='ad' style='color:#1f6fb2' title='Bônus de equipamento'>🎽${bonusEq(p,k)>0?'+':''}${bonusEq(p,k)}</small>`:''}<b class='av'>${(p[k]||0)+(pend[k]||0)+bonusEq(p,k)}</b><button class='mais' data-act='attrmais' data-id='${id}' data-a='${k}' ${livres>0?'':'disabled'} title='Escolher 1 ponto (confirme depois)'>+</button></div>`).join('');
   const abas=[['atr','📊 Atributos'],['hab','⚔️ Habilidades'+(pendentes?' •':'')],['id','📖 Identidade']];
   const aba=abas.some(x=>x[0]===fichaAba)?fichaAba:'atr';
   const painelAtr=`<div class='pts ${livres>0?'tem':''}'>✨ Pontos disponíveis: <b>${livres}</b> <small>(${PONTOS_POR_NIVEL} por nível)</small>
@@ -2345,9 +2482,9 @@ function fichaHeroiHTML(p,modo){
     <div class='ftopo'><b>${esc(p.nome)}</b><small>${esc(p.espec||'Sem especialização')} · Nível ${p.nivel||1}</small></div>
     <div class='stage'>
       <div class='palco'>
-        <div class='slots'>${lado(0,meio)}</div>
+        <div class='slots'>${slotsHab}</div>
         <div class='retrato' ${fotoStyle(p)}>${emoji(p,false)}</div>
-        <div class='slots'>${lado(meio,total)}</div>
+        <div class='slots'>${slotsEq}</div>
       </div>
       <div class='bar xp' title='Experiência'><i style='width:${pctXp}%'></i><span>XP ${p.xp||0}/${XP_POR_NIVEL}</span></div>
       <div class='bar' title='Vida'><i style='width:${pctV}%'></i><span>❤️ ${p.vida}/${p.vidaMax}</span></div>
@@ -2402,7 +2539,7 @@ function formCriarHTML(livres){
 function renderMeu(){
   const el=$('meuHeroi');if(!el||PAPEL!=='jogador')return;
   const m=meuHeroi(),livres=estado.jogadores.filter(p=>!p.dono);
-  const sig=m?JSON.stringify([m,estado.resetPontos,estado.custos]):'novo:'+livres.map(p=>p.id).join(',');
+  const sig=m?JSON.stringify([m,estado.resetPontos,estado.custos,estado.equipamentos]):'novo:'+livres.map(p=>p.id).join(',');
   if(sig===sigMeu)return;
   sigMeu=sig;
   el.innerHTML=m?`<div class='ficha'>${fichaHeroiHTML(m,'dono')}</div>`:formCriarHTML(livres);
@@ -2413,7 +2550,7 @@ function renderFichas(force){
   const hs=estado.jogadores;
   if(!hs.some(p=>p.id===fichaSel))fichaSel=hs.length?hs[0].id:null;
   const p=hs.find(x=>x.id===fichaSel);
-  const sig=p?JSON.stringify([p,estado.resetPontos,estado.custos,hs.map(x=>x.id+x.nome)]):'vazio';
+  const sig=p?JSON.stringify([p,estado.resetPontos,estado.custos,estado.equipamentos,hs.map(x=>x.id+x.nome)]):'vazio';
   if(!force&&sig===sigFicha)return;
   const ae=document.activeElement; /* so pausa enquanto o mestre digita; um botao focado (+/−) nao pode travar a atualizacao */
   if(!force&&ae&&el.contains&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;
