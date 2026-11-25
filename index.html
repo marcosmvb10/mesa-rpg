@@ -108,7 +108,7 @@ body[data-mira=E] .trocar,body[data-mira=D] .trocar,body[data-mira=E] .tirar,bod
 .flutuante{position:absolute;left:50%;top:0;font-size:27px;font-weight:bold;font-family:Georgia,serif;pointer-events:none;-webkit-text-stroke:1.2px #000;paint-order:stroke fill;text-shadow:0 0 12px currentColor,0 3px 5px #000;animation:sobe 1.3s cubic-bezier(.2,.9,.3,1) forwards;z-index:60;white-space:nowrap}
 @keyframes sobe{0%{opacity:1;transform:translate(-50%,0) scale(.6)}20%{transform:translate(-50%,-14px) scale(1.4)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
 #banner{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(0);font-size:48px;font-weight:bold;letter-spacing:2px;-webkit-text-stroke:2px #000;paint-order:stroke fill;z-index:50;pointer-events:none;text-shadow:0 0 20px currentColor,0 4px 0 #000;text-align:center;white-space:nowrap}
-#banner.mostra{animation:banner 1.6s ease-out}
+#banner.mostra{animation:banner 2.8s ease-out}
 @keyframes banner{0%{transform:translate(-50%,-50%) scale(0) rotate(-8deg);opacity:0}15%{transform:translate(-50%,-50%) scale(1.3) rotate(3deg);opacity:1}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{transform:translate(-50%,-60%) scale(1);opacity:0}}
 
 
@@ -478,6 +478,36 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 @keyframes auraProv{to{transform:rotate(360deg)}}
 .token.st-escudo .aur{opacity:1;box-shadow:0 0 0 2px rgba(150,210,255,.95),0 0 16px 4px rgba(90,180,255,.75),inset 0 0 14px rgba(120,190,255,.55);animation:auraEsc 1.8s ease-in-out infinite alternate}
 @keyframes auraEsc{to{box-shadow:0 0 0 2px rgba(210,235,255,1),0 0 26px 9px rgba(90,180,255,.95),inset 0 0 22px rgba(150,210,255,.75)}}
+/* cartoes de resumo da acao */
+#resumos{position:fixed;right:10px;top:76px;width:min(330px,calc(100vw - 20px));z-index:49;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.res-card{pointer-events:auto;cursor:pointer;background:linear-gradient(#f3e5bd,#e2cd96);border:3px solid #c9a24a;border-left-width:9px;border-radius:12px;padding:8px 10px;color:#3b2410;font-size:14px;box-shadow:0 6px 22px rgba(0,0,0,.6);animation:resEntra .35s cubic-bezier(.2,.9,.3,1.2)}
+.res-card.acerto,.res-card.sem{border-left-color:#2fbf6c}.res-card.crit{border-color:#ffb300;border-left-color:#ffb300;box-shadow:0 0 22px rgba(255,179,0,.6),0 6px 22px rgba(0,0,0,.6)}
+.res-card.erro{border-left-color:#8a78c8}.res-card.falha{border-left-color:#d03a3a}
+.res-card:not(:first-child){opacity:.85;transform:scale(.97)}
+.res-card.sai{animation:resSai .5s ease-in forwards}
+@keyframes resEntra{from{opacity:0;transform:translateX(40px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes resSai{to{opacity:0;transform:translateX(40px)}}
+.res-card .rt{display:flex;align-items:center;gap:8px;font-weight:bold;line-height:1.15}.res-card .rt .ic{font-size:26px}
+.res-card .rres{margin-left:auto;font-size:12px;padding:2px 9px;border-radius:10px;background:rgba(0,0,0,.14);white-space:nowrap}
+.res-card .rd{margin-top:5px;font-size:13px;background:rgba(0,0,0,.08);border-radius:6px;padding:3px 7px}
+.res-card .ra{margin-top:3px}.res-card .re{margin-top:3px;font-size:12px}
+@media(max-width:600px){#resumos{top:auto;bottom:72px;right:8px;left:8px;width:auto;flex-direction:column-reverse}}
+/* autorizacao de item e editor de ficha */
+#autItem,#edFicha{display:none;position:fixed;inset:0;z-index:97;padding:12px;background:rgba(2,4,8,.7);align-items:center;justify-content:center}
+#autItem.on,#edFicha.on{display:flex}
+#edFicha{align-items:flex-start;overflow:auto}
+#autItem .hmcard,#edFicha .edcard{position:relative;width:100%;max-width:420px;background:linear-gradient(#f3e5bd,#e2cd96);border:3px solid #c9a24a;border-radius:14px;padding:14px;color:#3b2410;box-shadow:0 10px 40px rgba(0,0,0,.7)}
+#edFicha .edcard{max-width:660px;margin:auto}
+#autItem .hmtop{display:flex;align-items:center;gap:10px}#autItem .hmic{font-size:44px}#autItem .hmnome{font-size:20px;color:#4a1f0a}
+#autItem .hmdesc{margin:10px 0}#autItem .hmef{background:rgba(0,0,0,.08);border-radius:8px;padding:8px;font-size:13px}
+#autItem .hmbtns{display:flex;gap:8px;margin-top:12px}#autItem .hmbtns .btn{flex:1}
+#edFicha .edfundo{position:fixed;inset:0}
+.gen-lista{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.gen-her{display:flex;align-items:center;gap:8px;padding:4px 8px;border:1px solid rgba(90,59,28,.4);border-radius:8px;background:rgba(0,0,0,.05);cursor:pointer}
+.gen-her input{width:auto}
+.gen-difs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+#sugestao{display:none;margin:6px 0;padding:7px 12px;border:2px solid #6b5326;border-radius:10px;background:rgba(20,14,40,.88);color:#ffe08a;text-align:center;font-size:14px}
+#sugestao.on{display:block}
 .camposB{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}.camposB>div{flex:1;min-width:90px}
 .fh .ro{background:rgba(0,0,0,.06);border-radius:6px;padding:4px 8px;margin-bottom:6px}
 .fh .hist{white-space:pre-wrap;max-height:200px;overflow:auto}
@@ -501,6 +531,9 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 <div id='banner'></div>
 <div id='habModal'></div>
 <div id='perigo'></div>
+<div id='resumos'></div>
+<div id='autItem'></div>
+<div id='edFicha'></div>
 <div id='toast'></div>
 <div id='avisoRegras'></div>
 <div id='testeBox'><div class='pcard'>
@@ -567,6 +600,7 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
   </div>
 </div>
 <div class='abas'>
+  <button id='abaMapa' data-aba='Mapa'>🗺️ Mapa</button>
   <button id='abaArena' class='ativa' data-aba='Arena'>⚔️ Arena</button>
   <button id='abaMeu' class='so-jogador' data-aba='Meu'>🛡️ Meu herói</button>
   <button id='abaMochila' data-aba='Mochila'>🎒 Mochila</button>
@@ -580,9 +614,70 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
   <button id='abaMestre' class='so-mestre' data-aba='Mestre'>🎭 Mestre</button>
 </div>
 
+<style id='cssMapa'>
+.mapa-barra{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.mapa-dica{text-align:center;font-size:13px;color:#c9b8e8;margin:4px 0 8px}
+.mapa-stage{position:relative;margin:0 auto;width:min(100%,max(280px,calc((100vh - 230px)*var(--ar,1.6))));aspect-ratio:var(--ar,1.6);border:3px solid #a8742a;border-radius:10px;overflow:hidden;background:#101a28;box-shadow:0 6px 20px rgba(0,0,0,.6);user-select:none;-webkit-user-select:none}
+.mapa-stage>img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.mapa-stage.redim{outline:2px dashed #4bd0ff;outline-offset:2px}
+.mapa-h{position:absolute;z-index:40;background:#ffe9b0;border:1.5px solid #a8742a;border-radius:3px;touch-action:none;opacity:.85}
+.mapa-h:hover,.mapa-stage.redim .mapa-h{opacity:1;background:#4bd0ff}
+.mapa-h.r{right:0;top:50%;transform:translateY(-50%);width:10px;height:38px;cursor:ew-resize}
+.mapa-h.b{bottom:0;left:50%;transform:translateX(-50%);width:38px;height:10px;cursor:ns-resize}
+.mapa-h.c{right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize}
+.mapa-stage.vazio{background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 48px),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 48px),#101a28}
+#mapaVazio{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;color:#9fb3c8;font-size:15px;pointer-events:none}
+.mapa-stage.vazio #mapaVazio{display:flex}
+#mapaTokens{position:absolute;inset:0}
+.mtk{position:absolute;width:calc(clamp(40px,7vw,64px)*var(--s,1));aspect-ratio:1;transform:translate(-50%,-50%)}
+.mtk.mov{cursor:grab;touch-action:none}
+.mtk.arrasta{cursor:grabbing;z-index:20}
+.mtk .mf{width:100%;height:100%;border-radius:50%;border:3px solid #ffd36b;background:#3a2a66 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:calc(clamp(18px,3.2vw,28px)*var(--s,1));box-shadow:0 3px 10px rgba(0,0,0,.7)}
+.mtk.mon .mf{border-color:#d33;background-color:#4a1414}
+.mtk.vez .mf{box-shadow:0 0 14px 4px #ffb300}
+.mtk.arrasta .mf,.mtk.sel .mf{box-shadow:0 0 0 3px #fff,0 0 16px 5px #4bd0ff}
+.mtk.morto{opacity:.55;filter:grayscale(.7)}
+.mtk .mn{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:3px;white-space:nowrap;font:12px Georgia,serif;color:#ffe9b0;background:rgba(10,5,20,.75);padding:1px 7px;border-radius:8px;pointer-events:none}
+.mtk.mon .mn{color:#ffd0d0}
+.mtk-x{display:none;position:absolute;top:-7px;right:-7px;width:18px;height:18px;padding:0;border-radius:50%;background:#d33;color:#fff;border:1.5px solid #fff;font:bold 10px/15px Arial,sans-serif;text-align:center;cursor:pointer;z-index:30}
+.mtk-x::after{content:'';position:absolute;inset:-9px}
+.mtk:hover .mtk-x,.mtk.sel .mtk-x{display:block}
+.mtk-tam{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:26px;display:flex;align-items:center;gap:6px;background:#1d1230;border:1.5px solid #4bd0ff;border-radius:8px;padding:6px 8px;z-index:30;touch-action:auto}
+.mtk.ctl-acima .mtk-tam{top:auto;bottom:100%;margin-top:0;margin-bottom:10px}
+.mtk-tam input{width:96px;margin:0;touch-action:auto}
+.mtk-tam i{display:block;border-radius:50%;background:#3a2a66;border:1.5px solid #ffd36b;flex:none}
+.mtk-tam i.a{width:8px;height:8px}.mtk-tam i.b{width:16px;height:16px}
+.mapa-modal{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:14px}
+.mapa-card{background:#1d1230;border:2px solid #a8742a;border-radius:10px;padding:14px;max-width:460px;width:100%;max-height:86vh;overflow:auto;color:#ffe9b0;font-family:Georgia,serif}
+.mapa-card h3{margin:0 0 8px;color:#ffd36b;font-weight:400;font-size:20px}
+.msec{font-size:13px;color:#d8b25a;margin:10px 0 6px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.mchip{display:flex;align-items:center;gap:8px;text-align:left;background:#2b1d4d;border:2px solid #ffd36b;border-radius:8px;padding:8px;color:#ffe9b0;font-family:inherit;cursor:pointer}
+.mchip.mon{border-color:#d33}
+.mchip.off{opacity:.5;border-color:#6b4a24;cursor:default}
+.mchip .mf{width:34px;height:34px;flex:none;border-radius:50%;border:2px solid #ffd36b;background:#3a2a66 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:18px}
+.mchip.mon .mf{border-color:#d33}
+.mchip b{display:block;font-size:13px;font-weight:400}
+.mchip small{display:block;font-size:11px;color:#ffd36b}
+.mchip.off small{color:#c9b8e8}
+.mdica{font-size:12px;color:#c9b8e8;margin:10px 0}
+</style>
+<div id='painelMapa' class='painel'>
+  <div class='mapa-barra so-mestre'>
+    <button class='btn peq azul' data-mapa='trocar'>🗺️ Trocar mapa</button>
+    <button class='btn peq azul' data-mapa='colocar'>➕ Colocar token</button>
+    <button class='btn peq verm' data-mapa='limpar'>🧹 Limpar mapa</button>
+    <input type='file' id='mapaFile' accept='image/*' style='display:none'>
+  </div>
+  <div class='mapa-dica' id='mapaDica'></div>
+  <div id='mapaStage' class='mapa-stage vazio'><img id='mapaImg' alt='' draggable='false' style='display:none'><div id='mapaVazio'></div><div id='mapaTokens'></div><div class='mapa-h r so-mestre' data-h='r'></div><div class='mapa-h b so-mestre' data-h='b'></div><div class='mapa-h c so-mestre' data-h='c'></div></div>
+</div>
+<div id='mapaAdd' class='mapa-modal'><div id='mapaAddBox' class='mapa-card'></div></div>
+
 <div id='painelArena' class='painel ativo'>
   <div id='dica' data-act='cancelar'></div>
   <div id='ordem'></div>
+  <div id='sugestao'></div>
   <div id='rolagem'><span class='rl-t'>🎲 Seu dado</span><label>Dado <select id='dado_sel'></select></label><small>O mestre define a dificuldade.</small></div>
   <div class='arena'><div id='ladoE' class='lado e'></div><div id='vs'>VS</div><div id='ladoD' class='lado d'></div></div>
   <div id='log'></div>
@@ -661,10 +756,10 @@ legend{font-size:12px;font-weight:bold;color:#4a1f0a;padding:0 6px}
 /* ---- Regras ajustaveis (mexa aqui para balancear) ---- */
 const KEY='mesaRPG_pirata3';
 const REGEN=2;            // estamina recuperada SOMENTE ao passar a vez (fim do turno)
-const ESTAMINA_BASE=20;   // estamina maxima de todo heroi novo
+const ESTAMINA_BASE=20;const ESTAMINA_POR_NIVEL=5; /* +5 de estamina maxima a cada nivel acima do 1 */   // estamina maxima de todo heroi novo
 const XP_POR_NIVEL=100;   // XP necessario para subir de nivel (o excedente e preservado)
 const VIDA_BASE=40,VIDA_POR_CON=10; // vida maxima do heroi = 40 + 10 por ponto de Constituicao
-const CAR_POR_BONUS=5;              // Carisma: +1 nas rolagens de dado a cada 5 pontos
+const CAR_POR_BONUS=10;             // Carisma: +1 nas rolagens de dado a cada 10 pontos (0-9: +0, 10-19: +1, 20-29: +2...)
 const PONTOS_POR_NIVEL=2; // pontos de atributo ganhos a cada nivel
 const ROT={forca:'Força',car:'Carisma',inte:'Inteligência',con:'Constituição',agi:'Agilidade'};
 const ICONES={veneno:'🧪',sangramento:'🩸',maldicao:'🌊'};
@@ -1105,7 +1200,7 @@ const copiaDeb=()=>DEBUFFS.map(d=>Object.assign({dotV:0,dotEst:0,atq:0,rolo:0,vu
 /* personagens do backup: entram so na primeira abertura (ou depois de Carregar backup) */
 const SEED={jogadores:[],monstros:[],log:[],custos:{},turno:1}; // jogo limpo: nenhum herói nem monstro cadastrado
 
-const base=()=>({jogadores:[],monstros:[],log:[],custos:{},turno:1,mudo:false,ordem:[],debuffs:null,rolagem:{faces:20,dif:10}});
+const base=()=>({jogadores:[],monstros:[],log:[],custos:{},turno:1,mudo:false,ordem:[],debuffs:null,rolagem:{faces:20,dif:10},mapa:{tokens:[]}});
 let estado=base(),mira=null,rolando=false,VEZ=null,ALVOM='todos';
 let ONLINE=false,PAPEL='mestre',SALA=null,MEUUID=null,esperando=false,primeiraSnap=true,ultEv=0,ultAviso=0,remotoRodando=false,pubT=null,sigMeu='',filaA=[],procA=false,tT=null;
 let MOCH={},mochSel=null,pendM={},sigMoch='',ultFacesM=0,fichaSel=null,sigFicha='',testeHeroi=null;
@@ -1128,7 +1223,7 @@ const custo=h=>estado.custos[h.id]??h.custo;
 /* Atributo que a habilidade usa (campo 'attr'); Forca = fisico, Inteligencia = magico, Agilidade = velocidade/precisao.
    Carisma NAO entra no dano: e sorte nas rolagens (bonusCarisma). Constituicao e so vida. Assim nenhum bonus conta duas vezes. */
 const attrDe=h=>h&&(h.attr||Object.keys(h.f||(h.cura&&h.cura.f)||{})[0]||null);
-/* Bonus de sorte do Carisma: +1 a cada CAR_POR_BONUS (5) pontos. So vale para HEROIS (monstros rolam o dado puro).
+/* Bonus de sorte do Carisma: +1 a cada CAR_POR_BONUS (10) pontos, somado UMA vez por rolagem (rolarDado). So vale para HEROIS (monstros rolam o dado puro).
    Limitado a 1/4 do tamanho do dado (d20 = ate +5) para nunca garantir sucesso; 1 natural continua falha critica e o critico
    depende so do dado. */
 function bonusCarisma(p,faces){
@@ -1144,7 +1239,7 @@ const habsDe=p=>[...[...(p.habsLegado||[]),...Object.values(p.escolhas||{})].map
 const iconeDe=p=>p.icone||(CLASSES_LEGADO[p.classe]||{}).ic||'🏴‍☠️';
 const logar=m=>{estado.log.unshift(m);if(estado.log.length>40)estado.log.length=40};
 const fotoStyle=p=>p.foto?`style='background-image:url(${p.foto})'`:'';
-const emoji=(p,mon)=>p.foto?'':(mon?'👹':iconeDe(p));
+const emoji=(p,mon)=>p.foto?'':(mon?(p.icone||'👹'):iconeDe(p));
 
 /* ---------- sons (sintetizados, sem arquivos) ---------- */
 let AC=null;
@@ -1200,7 +1295,7 @@ const FACEINFO=[];
   $('d20').innerHTML=html;
 })();
 
-async function rolar3D(r,faces,quem,dif,bonus){
+async function rolar3D(r,faces,quem,dif,bonus,car,rolo){
   const f=FACEINFO.find(x=>x.num===r)||FACEINFO[0];
   const d=$('d20'),m=$('mesaDado');
   d.className='';d.style.transition='none';
@@ -1208,16 +1303,18 @@ async function rolar3D(r,faces,quem,dif,bonus){
   $('res').textContent=(quem?quem+' · ':'')+'d'+faces+(dif!==undefined?' · dificuldade '+dif:'');
   m.classList.add('on');
   void d.offsetWidth;
-  d.style.transition='transform 1.6s cubic-bezier(.25,.8,.35,1.12)';
+  d.style.transition='transform 2s cubic-bezier(.25,.8,.35,1.12)';
   d.style.transform=`translateY(0px) rotateX(${-(90-f.pol)+720}deg) rotateY(${-f.az+1080}deg) scale(1.25)`;
   somDado();
-  await esperar(1700);
-  $('res').innerHTML=`${quem?esc(quem)+' · ':''}d${faces}: <b>${r}</b>${bonus?` ${bonus>0?'+':''}${bonus} = <b>${r+bonus}</b>`:''}${dif!==undefined?` <small>(dificuldade ${dif})</small>`:''}`;
+  await esperar(2100);
+  /* resultado: dado original separado de cada bonus, e o total */
+  const partes=(car||rolo)?`${car?` +${car} Carisma`:''}${rolo?` ${rolo>0?'+':''}${rolo} efeitos`:''}`:(bonus?` ${bonus>0?'+':''}${bonus}`:'');
+  $('res').innerHTML=`${quem?esc(quem)+' · ':''}d${faces}: <b>${r}</b>${partes}${bonus?` = <b>${r+bonus}</b>`:''}${dif!==undefined?` <small>(dificuldade ${dif})</small>`:''}`;
 }
 const fecharD=()=>$('mesaDado').classList.remove('on');
 
 function aba(n){
-  ['Arena','Meu','Mochila','Loja','Fichas','Equip','Cadastrar','Biblioteca','Monstros','Classes','Mestre'].forEach(x=>{$('painel'+x).classList.toggle('ativo',x===n);$('aba'+x).classList.toggle('ativa',x===n)});
+  ['Mapa','Arena','Meu','Mochila','Loja','Fichas','Equip','Cadastrar','Biblioteca','Monstros','Classes','Mestre'].forEach(x=>{$('painel'+x).classList.toggle('ativo',x===n);$('aba'+x).classList.toggle('ativa',x===n)});
   cancelar();desenhar();
 }
 
@@ -1238,7 +1335,7 @@ async function addPersonagem(tipo){
   if(tipo==='jogadores'){
     if(!txt('jNome'))return;
     const foto=await lerFoto('jFoto');
-    const novoId=Date.now();estado.jogadores.push({id:novoId,nome:txt('jNome'),foto,nivel:Math.max(1,num('jNivel')||1),xp:0,escolhas:{},distr:{},historico:txt('jHist').slice(0,1500),peso:num('jPeso'),altura:num('jAltura'),espec:txt('jEspec').slice(0,40),especDesc:txt('jEspecDesc').slice(0,400),vida:VIDA_BASE+VIDA_POR_CON*num('jCon'),vidaMax:VIDA_BASE+VIDA_POR_CON*num('jCon'),est:ESTAMINA_BASE,estMax:ESTAMINA_BASE,forca:num('jFor'),car:num('jCar'),inte:num('jInt'),con:num('jCon'),agi:num('jAgi'),arena:true,status:[]});salvarMochila(novoId,{din:num('jDin'),itens:[],acess:[],notas:''});
+    const novoId=Date.now();estado.jogadores.push({id:novoId,nome:txt('jNome'),foto,nivel:Math.max(1,num('jNivel')||1),xp:0,estNovo:true,escolhas:{},distr:{},historico:txt('jHist').slice(0,1500),peso:num('jPeso'),altura:num('jAltura'),espec:txt('jEspec').slice(0,40),especDesc:txt('jEspecDesc').slice(0,400),vida:VIDA_BASE+VIDA_POR_CON*num('jCon'),vidaMax:VIDA_BASE+VIDA_POR_CON*num('jCon'),est:ESTAMINA_BASE,estMax:ESTAMINA_BASE,forca:num('jFor'),car:num('jCar'),inte:num('jInt'),con:num('jCon'),agi:num('jAgi'),arena:true,status:[]});salvarMochila(novoId,{din:num('jDin'),itens:[],acess:[],notas:''});
     ['jNome','jFor','jCar','jInt','jCon','jAgi','jDin','jFoto','jPeso','jAltura','jEspec','jEspecDesc','jHist'].forEach(i=>$(i).value='');$('jNivel').value='1';
   }else{
     if(!txt('mNome'))return;
@@ -1257,14 +1354,14 @@ function tokenHTML(p,tipo){
     <i class='aur'></i><div class='foto' ${fotoStyle(p)}>${emoji(p,mon)}${mon?'':`<span class='nv' title='Nível'>${p.nivel||1}</span>`}</div>
     <div class='nome'>${esc(p.nome)}</div>
     <div class='bar ${pct<30?'baixo':''}'><i style='width:${pct}%'></i><span>${p.vida}/${p.vidaMax}</span></div>
-    ${mon?'':`<div class='bar est'><i style='width:${p.estMax?Math.min(100,p.est/p.estMax*100):0}%'></i><span>${p.est}/${p.estMax}</span></div>`}
+    ${(mon&&p.estMax===undefined)?'':`<div class='bar est'><i style='width:${p.estMax?Math.min(100,p.est/p.estMax*100):0}%'></i><span>${p.est}/${p.estMax}</span></div>`}
     <div class='st'>${st}</div><button class='trocar' data-t='${tipo}' data-id='${p.id}' title='Mover para o outro lado'>⇄</button><button class='tirar' data-t='${tipo}' data-id='${p.id}' title='Tirar da arena (volta pela Biblioteca)'>✖</button></div>`;
 }
 
 /* Botoes dos ataques cadastrados no monstro (so o mestre os usa; mesmo fluxo de mira dos herois). */
 function skillsMonstro(p){
   if(PAPEL==='jogador'||!(p.habsM||[]).length)return '';
-  return `<div class='perg'>${p.habsM.map(h=>`<div class='sk'><button class='skill ${p.vida<=0?'sem':''}' data-t='monstros' data-id='${p.id}' data-h='${h.id}' title='${escA(h.nome+' — dano '+calcDano(p,h)+(h.attr?' ('+ROT[h.attr]+')':''))}'>${h.ic||'👹'}<span class='c'>${calcDano(p,h)}</span></button><small>${esc(h.nome)}</small></div>`).join('')}</div>`;
+  return `<div class='perg'>${p.habsM.map(h=>`<div class='sk'><button class='skill ${(p.vida<=0||(p.estMax!==undefined&&p.est<custoDe(p,h)))?'sem':''} ${h.forte?'forte':''}' data-t='monstros' data-id='${p.id}' data-h='${h.id}' title='${escA(h.nome+' — '+(h.alvo==='area'?'área, ':'')+(h.cura?'cura':'dano '+calcDano(p,h))+(h.attr?' ('+ROT[h.attr]+')':'')+(p.estMax!==undefined?' — custo '+custoDe(p,h)+' ⚡':''))}'>${h.ic||'👹'}<span class='c'>${p.estMax!==undefined?custoDe(p,h):calcDano(p,h)}</span></button><small>${esc(h.nome)}</small></div>`).join('')}</div>`;
 }
 function linhaHeroi(p){
   const sks=habsDe(p).map(h=>{
@@ -1279,7 +1376,7 @@ function fichaHTML(p,tipo){
   const c=(campo,rot)=>{const ro=(!mon&&campo==='vidaMax')?"readonly title='Calculada pela Constituição'":'';return `<div><label>${rot}</label><input type='number' value='${p[campo]??0}' ${d} data-campo='${campo}' ${ro}></div>`};
   const sel=mon?'':`<small>Nv ${p.nivel||1} · ${esc(p.espec||'sem especialização')}</small>`;
   const campos=mon?c('vida','Vida')+c('vidaMax','Vida máx')+c('dano','Dano'):c('vida','Vida')+c('vidaMax','Vida máx')+c('est','Estamina')+c('estMax','Estam. máx')+c('forca','Força')+c('car','Carisma')+c('inte','Inteligência')+c('con','Constituição')+c('agi','Agilidade')+c('nivel','Nível')+c('xp','XP');
-  return `<div class='ficha ${mon?'m':''} ${p.arena===false?'fora':''}'><div class='cab'><div class='mini' ${fotoStyle(p)}>${emoji(p,mon)}</div><div><b>${esc(p.nome)}</b>${p.dono?` <small>👤 ${esc(p.donoNome||'jogador')}</small>`:''}<br>${sel}</div></div><div class='campos'>${campos}</div><div class='acoes'>${p.dono?`<button class='btn peq' ${d} data-act='desvincular'>Desvincular</button>`:''}<button class='btn peq' ${d} data-act='lado'>⇄ Lado ${p.lado==='D'?'direito':'esquerdo'}</button><button class='btn peq' ${d} data-act='arena'>${p.arena===false?'➕ Levar à arena':'➖ Tirar da arena'}</button><button class='btn peq azul' ${d} data-act='curar'>Curar</button><button class='btn peq verm' ${d} data-act='remover'>Remover</button></div></div>`;
+  return `<div class='ficha ${mon?'m':''} ${p.arena===false?'fora':''}'><div class='cab'><div class='mini' ${fotoStyle(p)}>${emoji(p,mon)}</div><div><b>${esc(p.nome)}</b>${p.dono?` <small>👤 ${esc(p.donoNome||'jogador')}</small>`:''}<br>${sel}</div></div><div class='campos'>${campos}</div><div class='acoes'>${PAPEL==='mestre'?`<button class='btn peq azul' ${d} data-act='edabrir'>✏️ Editar ficha</button>`:''}${p.dono?`<button class='btn peq' ${d} data-act='desvincular'>Desvincular</button>`:''}<button class='btn peq' ${d} data-act='lado'>⇄ Lado ${p.lado==='D'?'direito':'esquerdo'}</button><button class='btn peq' ${d} data-act='arena'>${p.arena===false?'➕ Levar à arena':'➖ Tirar da arena'}</button><button class='btn peq azul' ${d} data-act='curar'>Curar</button><button class='btn peq verm' ${d} data-act='remover'>Remover</button></div></div>`;
 }
 
 /* Aba Habilidades: catalogo por etapa de desbloqueio. Mestre edita o custo de estamina; jogador so le. */
@@ -1292,6 +1389,7 @@ function desenhar(){
   document.querySelectorAll('.linha').forEach(el=>antes[el.id]=el.getBoundingClientRect().top);
   if(!estado.debuffs)estado.debuffs=copiaDeb();
   if(PAPEL==='mestre'&&!estado.v20){estado.jogadores.forEach(p=>{p.estMax=ESTAMINA_BASE;p.est=Math.min(p.est||0,ESTAMINA_BASE)});estado.v20=true;salvar()}
+  if(PAPEL==='mestre'&&!estado.vEstNivel){estado.jogadores.forEach(normalizarHeroi);estado.vEstNivel=true;salvar()} /* uma vez: aplica +5 por nivel nos herois ja existentes e grava */
   estado.jogadores.forEach(p=>{p.lado=p.lado||'E';normalizarHeroi(p)});estado.monstros.forEach(p=>{p.lado=p.lado||'D'});
   if(PAPEL==='mestre')aplicarInicioVez();
   const f=fila(),pos=id=>{const i=f.findIndex(x=>x.p.id===id);return i<0?99:i};
@@ -1312,7 +1410,7 @@ function desenhar(){
   $('listaJogadores').innerHTML=estado.jogadores.map(p=>fichaHTML(p,'jogadores')).join('')||`<div class='vazio'>Nenhum herói ainda.</div>`;
   $('listaMonstros').innerHTML=estado.monstros.map(p=>fichaHTML(p,'monstros')).join('')||`<div class='vazio'>Nenhum monstro ainda.</div>`;
   $('listaClasses').innerHTML=catalogoHTML();
-  renderMonstros();renderLoja();
+  renderMonstros();renderLoja();mapaRender();
   $('listaDebuffs').innerHTML=estado.debuffs.map(debHTML).join('')||`<div class='vazio'>Nenhum debuff. Crie um no botão abaixo.</div>`;
   $('listaEfeitos').innerHTML=efeitosHTML();
   $('mAlvo').innerHTML=alvoOpcoes();$('mAlvo').value=ALVOM;
@@ -1335,6 +1433,8 @@ function desenhar(){
   marcarMira();
   fxBotao();
   fxWatch();
+  if(PAPEL==='mestre'){autitensLimpar();monstroFases()}
+  renderSugestao();
 }
 
 function flutuar(p,texto,cor){
@@ -1381,7 +1481,8 @@ function fimDeVez(p){
   p.status=p.status.filter(s=>s.t>0);
 }
 const avancar=id=>{
-  const quem=acharP(id);regenerarAoPassarVez(quem);  // recupera estamina antes de expirar efeitos
+  const quem=acharP(id);if(quem&&estado.monstros.includes(quem))quem.agiu=(quem.agiu||0)+1; /* turnos que o monstro ja agiu (padrao do chefao) */
+  regenerarAoPassarVez(quem);  // recupera estamina antes de expirar efeitos
   fimDeVez(quem);
   estado.ordem=fila().map(x=>x.p.id).filter(x=>x!==id).concat(id);
   estado.vezAplicada=null;
@@ -1630,13 +1731,13 @@ async function rolarDado(atac,h,dec,apoio,teste){
   const res=falha?'falha':crit?'crit':ef>=dif?'acerto':'erro';
   if(ONLINE&&PAPEL==='mestre'){
     const A={falha:['💀 FALHA CRÍTICA!','#ff5555'],crit:['⭐ CRÍTICO! ⭐','#ffd36b'],acerto:teste?['✅ SUCESSO!','#7dff7d']:(apoio?(h.cura?['💚 CURA!','#7dffa8']:['🛡️ FUNCIONOU!','#7fe8ff']):['⚔️ ACERTOU!','#7dff7d']),erro:teste?['❌ FALHOU','#cbb8ff']:['💨 '+(apoio?'FALHOU...':'ERROU...'),'#cbb8ff']}[res];
-    FB.salvarSala(SALA,{evento:evt({tipo:'dado',r,faces,dif,bonus:rolo+car,cls,res,banner:A[0],cor:A[1],quem,apoio:!!apoio,teste:!!teste,som:apoio&&h.cura?'cura':'buff',fx:fxPack(res)})}).catch(()=>{});
+    FB.salvarSala(SALA,{evento:evt({tipo:'dado',r,faces,dif,bonus:rolo+car,car,rolo,cls,res,banner:A[0],cor:A[1],quem,apoio:!!apoio,teste:!!teste,som:apoio&&h.cura?'cura':'buff',fx:fxPack(res)})}).catch(()=>{});
   }
-  await rolar3D(r,faces,quem,dif,rolo+car);
+  await rolar3D(r,faces,quem,dif,rolo+car,car,rolo);
   $('d20').className=cls;
   if(falha)somFalha();
   if(crit)tom(1047,1047,.3,'triangle',.15);
-  await esperar(800);
+  await esperar(2300);
   fecharD();await esperar(300);
   return {sem:false,r,faces,rolo,car,ef,dif,falha,crit,cls,res,quem};
 }
@@ -1651,23 +1752,25 @@ async function usarApoio(atac,h,alvo,dec){
   const rr=await rolarDado(atac,h,dec,true);fxCtx=null;
   const spx={de:atac.id,para:alvos.map(q=>q.id),h:h.id,apoio:true,res:rr.sem?'sem':rr.res};
   const ok=rr.res==='acerto'||rr.res==='crit',boost=rr.crit?2:1;
+  const RS={tipo:'apoio',apoio:true,quem:atac.nome,ic:h.ic,hab:h.nome,res:rr.sem?'sem':rr.res,dado:rr.sem?null:{r:rr.r,faces:rr.faces,car:rr.car||0,rolo:rr.rolo||0,ef:rr.ef,dif:rr.dif},alvos:[],efeitos:[]};
   let msg=`${esc(atac.nome)} usou ${esc(h.nome)} ${rr.sem?'(sem rolagem)':`e rolou d${rr.faces}: <b>${rr.r}</b>${detalheRolo(rr)} (dif. ${rr.dif})`}. `;
   if(ok){
     banner(rr.crit?'⭐ CRÍTICO! ⭐':(h.cura?'💚 CURA!':'🛡️ '+h.nome.toUpperCase()),rr.crit?'#ffd36b':(h.cura?'#7dffa8':'#7fe8ff'));
     if(h.cura)somCura();else somBuff();
     await Promise.all([esperar(150),fxPlay(spx)]);
     alvos.forEach(q=>{
-      if(h.cura){const n=Math.max(1,Math.round(soma(atac,h.cura.f)))*boost,antes=q.vida;q.vida=Math.min(q.vidaMax,q.vida+n);flutuar(q,'+'+(q.vida-antes),'#7dff7d');msg+=`${esc(q.nome)} recupera ${q.vida-antes} de vida. `}
-      if(alt!=='si')[].concat(h.efAl||[]).forEach(sp=>{aplicarSt(q,criarStatus(sp,atac,h.id,q,boost));flutuar(q,sp.ic+' '+sp.nome,'#7fe8ff');fxIcone(q.id,sp.ic);msg+=`${esc(q.nome)}: ${sp.ic} ${esc(sp.nome)}. `});
+      if(h.cura){const n=Math.max(1,Math.round(soma(atac,h.cura.f)))*boost,antes=q.vida;q.vida=Math.min(q.vidaMax,q.vida+n);flutuar(q,'+'+(q.vida-antes),'#7dff7d');RS.alvos.push({nome:q.nome,txt:'+'+(q.vida-antes)+' ❤️'});msg+=`${esc(q.nome)} recupera ${q.vida-antes} de vida. `}
+      if(alt!=='si')[].concat(h.efAl||[]).forEach(sp=>{aplicarSt(q,criarStatus(sp,atac,h.id,q,boost));flutuar(q,sp.ic+' '+sp.nome,'#7fe8ff');fxIcone(q.id,sp.ic);RS.efeitos.push({ic:sp.ic,nome:sp.nome,alvo:q.nome,t:sp.t});msg+=`${esc(q.nome)}: ${sp.ic} ${esc(sp.nome)}. `});
     });
-    [].concat(h.efSi||[]).forEach(sp=>{aplicarSt(atac,criarStatus(sp,atac,h.id,atac,boost));flutuar(atac,sp.ic+' '+sp.nome,'#7fe8ff');fxIcone(atac.id,sp.ic);msg+=`${esc(atac.nome)}: ${sp.ic} ${esc(sp.nome)}. `});
+    [].concat(h.efSi||[]).forEach(sp=>{aplicarSt(atac,criarStatus(sp,atac,h.id,atac,boost));flutuar(atac,sp.ic+' '+sp.nome,'#7fe8ff');fxIcone(atac.id,sp.ic);RS.efeitos.push({ic:sp.ic,nome:sp.nome,alvo:atac.nome,t:sp.t});msg+=`${esc(atac.nome)}: ${sp.ic} ${esc(sp.nome)}. `});
     if(boost>1)msg+='Crítico: efeito dobrado e 1 turno a mais! ';
   }else{
     banner(rr.falha?'💀 FALHA CRÍTICA!':'💨 FALHOU...',rr.falha?'#ff5555':'#cbb8ff');somErro();fxPlay(spx);
     flutuar(atac,'FALHOU','#cbb8ff');msg+='A habilidade falhou.';
   }
+  emitirResumo(RS);
   logar(msg);avancar(atac.id);salvar();
-  await esperar(1300);
+  await esperar(1700);
   desenhar();rolando=false;
 }
 
@@ -1687,8 +1790,11 @@ async function atacar(atac,tipo,alvo,h,dec){
   const atqPct=somaEf(atac,'atq');
   const dano0=Math.max(0,Math.round((h?calcDano(atac,h):(atac.dano||0))*(1+atqPct/100))),dir=atac.lado==='D'?-60:60;
   let msg=`${esc(atac.nome)}${h?' usou '+esc(h.nome):''} ${rr.sem?'(sem rolagem)':`e rolou d${faces}: <b>${r}</b>${detalheRolo(rr)} (dif. ${dif})`}. `,acertou=false;
+  const RS={tipo:'ataque',quem:atac.nome,ic:h?h.ic:'⚔️',hab:h?h.nome:'Ataque básico',res:rr.sem?'sem':rr.res,dado:rr.sem?null:{r,faces,car:rr.car||0,rolo:rr.rolo||0,ef,dif},alvos:[],efeitos:[]};
   const bater=(q,n,cor,suf)=>{
-    const dn=Math.max(0,Math.round(n*(1+somaEf(q,'vuln')/100))),o=sofrer(q,dn);
+    const rm=(q.resist&&h&&q.resist[attrDe(h)])||0; /* resistencia/fraqueza do monstro ao atributo do golpe (%) */
+    const dn=Math.max(0,Math.round(n*(1+somaEf(q,'vuln')/100)*(1+rm/100))),o=sofrer(q,dn);
+    RS.alvos.push({nome:q.nome,txt:'-'+o.rest+(o.abs?' (🛡️ '+o.abs+' absorvido)':'')+(rm<0?' · resistiu':(rm>0?' · fraqueza!':''))});
     anim(q,'tremer');
     flutuar(q,(o.rest>0||!o.abs?'-'+o.rest:'🛡️')+(o.abs&&o.rest>0?' 🛡️'+o.abs:'')+(suf||''),cor);
     if(q.vida===0){somMorte();fxMorte(q)}
@@ -1698,7 +1804,7 @@ async function atacar(atac,tipo,alvo,h,dec){
     banner('💀 FALHA CRÍTICA!','#ff5555');fxPlay(spx);
     const dn=Math.floor(dano0/2);atac.vida=Math.max(0,atac.vida-dn);
     anim(atac,'tremer');flutuar(atac,'-'+dn,'#ff5555');
-    msg+=`FALHA CRÍTICA! ${esc(atac.nome)} se machuca e sofre ${dn}.`;
+    msg+=`FALHA CRÍTICA! ${esc(atac.nome)} se machuca e sofre ${dn}.`;RS.alvos.push({nome:atac.nome,txt:'-'+dn+' (se machucou)'});
     if(atac.vida===0){somMorte();fxMorte(atac)}
     if(outros.length){await esperar(350);msg+=` O poder escapa e atinge os aliados: ${outros.map(q=>bater(q,dano0,'#ff5555',' 💥')).join('; ')}.`}
   }else if(crit){
@@ -1711,24 +1817,26 @@ async function atacar(atac,tipo,alvo,h,dec){
     msg+='Acertou! '+alvos.map(q=>bater(q,dano0,'#ff6b6b')).join('; ')+'.';
   }else{
     banner('💨 ERROU...','#cbb8ff');somErro();
-    anim(atac,'atacando',dir);fxPlay(spx);alvos.forEach(q=>flutuar(q,'ERROU','#cbb8ff'));
+    anim(atac,'atacando',dir);fxPlay(spx);alvos.forEach(q=>{flutuar(q,'ERROU','#cbb8ff');RS.alvos.push({nome:q.nome,txt:'desviou'})});
     msg+='Errou.';
   }
   if(atqPct&&acertou)msg+=` ${atqPct<0?'🔻':'🔺'} dano ${atqPct>0?'+':''}${atqPct}% por efeito.`;
   if(acertou&&h){
     [].concat(h.ef||[]).forEach(sp=>alvos.forEach(q=>{
-      if(q.vida>0){aplicarSt(q,criarStatus(sp,atac,h.id,q));fxIcone(q.id,sp.ic);msg+=` ${sp.ic} ${esc(q.nome)}: ${esc(sp.nome)}.`}
+      if(q.vida>0){aplicarSt(q,criarStatus(sp,atac,h.id,q));fxIcone(q.id,sp.ic);RS.efeitos.push({ic:sp.ic,nome:sp.nome,alvo:q.nome,t:sp.t});msg+=` ${sp.ic} ${esc(q.nome)}: ${esc(sp.nome)}.`}
     }));
     if(h.dot){
       const dd=Math.max(1,Math.round(soma(atac,h.dot.f)));
       alvo.status=(alvo.status||[]).filter(s=>s.tipo!==h.dot.tipo);
       alvo.status.push({tipo:h.dot.tipo,dotV:dd,t:h.dot.t,novo:alvo.id===VEZ});
+      RS.efeitos.push({ic:ICONES[h.dot.tipo]||'☠️',nome:h.dot.tipo,alvo:alvo.nome,t:h.dot.t,txt:dd+' por turno'});
       msg+=` ${ICONES[h.dot.tipo]} ${h.dot.tipo}: ${dd} por turno durante ${h.dot.t} turnos.`;
     }
   }
   atac.status=(atac.status||[]).filter(s=>!s.gasta);
+  emitirResumo(RS);
   logar(msg);avancar(atac.id);salvar();
-  await esperar(900);
+  await esperar(1500);
   desenhar();rolando=false;
 }
 
@@ -1837,6 +1945,7 @@ document.addEventListener('change',e=>{
     const p=buscar(i.dataset.t,+i.dataset.id);if(!p)return;
     const c=i.dataset.campo;p[c]=CAMPOS_TEXTO.includes(c)?String(i.value).slice(0,2000):(parseInt(i.value)||0);
     if(p.vida>p.vidaMax)p.vida=p.vidaMax;
+    if(c==='estMax'&&i.dataset.t==='jogadores')p.estBase=Math.max(1,p.estMax-ESTAMINA_POR_NIVEL*Math.max(0,(p.nivel||1)-1));
     if(p.estMax!==undefined&&p.est>p.estMax)p.est=p.estMax;
     salvar();desenhar();return;
   }
@@ -1857,7 +1966,7 @@ function importar(i){
   r.readAsText(f);i.value='';
 }
 function resetar(){
-  if(confirm('Apagar TUDO (heróis, monstros e histórico)? Não dá para desfazer.')){estado=base();salvar();cancelar();desenhar()}
+  if(confirm('Apagar TUDO (heróis, monstros e histórico)? Não dá para desfazer.')){estado=base();mapaLimparTudo();salvar();cancelar();desenhar()}
 }
 
 /* ======================= PROGRESSAO DO HEROI =======================
@@ -1884,6 +1993,11 @@ function normalizarHeroi(p){
   if(p.nivel===undefined)p.nivel=1;
   if(p.xp===undefined)p.xp=0;
   p.escolhas=p.escolhas||{};p.distr=p.distr||{};
+  /* estamina maxima = base do heroi (a que ele ja tinha, 20 se nao houver) + 5 por nivel acima do 1; a atual nunca passa do maximo */
+  if(p.estBase===undefined)p.estBase=Math.max(1,p.estMax||ESTAMINA_BASE);
+  p.estMax=p.estBase+ESTAMINA_POR_NIVEL*Math.max(0,(p.nivel||1)-1);
+  if(p.estNovo){p.est=p.estMax;delete p.estNovo}
+  if(p.est===undefined||p.est>p.estMax)p.est=Math.min(p.est===undefined?p.estMax:p.est,p.estMax);
   if(p.classe&&!p.migrado){p.habsLegado=(LEGADO[p.classe]||[]).slice();p.migrado=true}
 }
 /* XP: soma e sobe de nivel enquanto passar de XP_POR_NIVEL, preservando o excedente (90+30 => nivel+1 com 20). */
@@ -1891,7 +2005,8 @@ function concederXP(p,qtd,fonte){
   qtd=Math.floor(Number(qtd)||0);if(qtd<=0)return 0;
   p.xp=(p.xp||0)+qtd;let subiu=0;
   while(p.xp>=XP_POR_NIVEL){p.xp-=XP_POR_NIVEL;p.nivel=(p.nivel||1)+1;subiu++}
-  logar(`⭐ ${esc(p.nome)} ganhou ${qtd} XP (${XP_FONTES[fonte]||fonte||'mestre'})${subiu?` e subiu para o <b>nível ${p.nivel}</b>!`:''}`);
+  if(subiu)normalizarHeroi(p); /* aplica na hora o aumento da estamina maxima */
+  logar(`⭐ ${esc(p.nome)} ganhou ${qtd} XP (${XP_FONTES[fonte]||fonte||'mestre'})${subiu?` e subiu para o <b>nível ${p.nivel}</b>! (+${ESTAMINA_POR_NIVEL*subiu} ⚡ de estamina máxima)`:''}`);
   floatsPend.push([p,'+'+qtd+' XP','#ffd36b']);
   if(subiu)floatsPend.push([p,'⬆️ Nível '+p.nivel,'#ffd36b']);
   return subiu;
@@ -1984,6 +2099,7 @@ function executarFicha(p,acao,a,porJogador){
     }
     case 'usarItem':{
       if(p.vida<=0)return {erro:'Herói caído não pode usar itens.'};
+      if(VEZ!==p.id)return {erro:'Só dá para usar item consumível no seu turno.'};
       const m=copiaM(p.id),it=(m.itens||[])[+a.i];
       if(!it)return {erro:'Item não encontrado.'};
       if(it.tipo!=='consumivel')return {erro:'Esse item não é consumível.'};
@@ -1995,6 +2111,8 @@ function executarFicha(p,acao,a,porJogador){
       it.qtd--;salvarMochila(p.id,m);
       logar(`${def.ic} ${esc(p.nome)} usou <b>${esc(it.nome)}</b> (${txt}). Restam ${it.qtd}.`);
       floatsPend.push([p,def.ic+' '+txt,'#7dff7d']);somCura();
+      logar(`⏭️ ${esc(p.nome)} gastou o turno usando o item.`);
+      avancar(p.id);
       return {};
     }
   }
@@ -2003,6 +2121,12 @@ function executarFicha(p,acao,a,porJogador){
 /* Entrada da interface: jogador online envia o pedido ao mestre; mestre/offline executa direto. */
 function fichaAcao(heroiId,acao,args){
   if(ONLINE&&PAPEL==='jogador'){
+    if(acao==='usarItem'){ /* pedido de autorizacao: so na propria vez, um por vez */
+      const h=estado.jogadores.find(x=>x.id===heroiId);
+      if(!h||VEZ!==h.id){toast('Só dá para usar item consumível no seu turno.');return}
+      if(ITEMPEND){toast('Você já tem um pedido aguardando o mestre.');return}
+      itemPendSet(true);toast('🧪 Pedido enviado ao mestre. Aguarde a autorização...');
+    }
     /* Pontos de atributo: mostra o resultado imediatamente (otimista). O mestre executa de verdade e o snapshot do banco prevalece. */
     if(acao==='confirmarPontos'){
       const h=estado.jogadores.find(x=>x.id===heroiId);
@@ -2072,7 +2196,7 @@ function darXPUI(){
    so deixam o mestre ler e gravar (jogadores nao recebem esses dados nem pelo estado publico). Offline fica em estado.monstrosLib.
    'Levar a arena' copia o modelo para estado.monstros: ataques viram habsM (dano base + 0,5 x atributo escolhido). */
 let MLIB={},monDraft=null,sigMon='',sigLoja='';
-const DIFICULDADES=['Fácil','Normal','Difícil','Chefe'];
+const DIFICULDADES=['Fácil','Médio','Difícil','Chefão'];
 const MON_ATTRS=[['forca','Força'],['inte','Inteligência'],['agi','Agilidade'],['con','Constituição']]; // monstros nao usam Carisma (dado puro)
 const monLista=()=>(ONLINE?Object.values(MLIB):(estado.monstrosLib||[])).slice().sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||'')));
 const monBranco=()=>({id:Date.now(),nome:'',descricao:'',foto:'',nivel:1,dificuldade:'Normal',vida:30,vidaMax:30,dano:5,forca:0,inte:0,agi:0,con:0,car:0,habs:[]});
@@ -2088,80 +2212,408 @@ function monApagarLib(id){
 }
 /* Formulario (usa o mesmo visual do cadastro de heroi). Os campos atualizam monDraft sem redesenhar. */
 function monFormHTML(){
-  const m=monDraft,ed=monLista().some(x=>x.id===m.id);
-  const num=(k,rot,extra='')=>`<div><small>${rot}</small><input type='number' min='0' data-mf='${k}' value='${+m[k]||0}' ${extra}></div>`;
+  const m=monDraft,ed=monLista().some(x=>x.id===m.id),ger=!!m.gerado;
+  const num=(k,rot,extra)=>`<div><small>${rot}</small><input type='number' min='0' data-mf='${k}' value='${+m[k]||0}' ${extra||''}></div>`;
+  const efTxt=h=>[(h.attr||+h.dano)&&!h.cura?'🎯 dano final ≈ '+((+h.dano||0)+(h.attr?Math.round(.5*(+m[h.attr]||0)):0)):'',h.ef?'💥 '+[].concat(h.ef).map(e=>e.nome+' ('+e.t+' t.)').join(', '):'',h.efSi?'✨ em si: '+[].concat(h.efSi).map(e=>e.nome).join(', '):'',h.cura?'💚 recupera vida':''].filter(Boolean).join(' · ');
   const habs=m.habs.map((h,i)=>`<div class='mon-hab'>
       <div><small>Nome do ataque</small><input data-mh='${i}:nome' value='${escA(h.nome||'')}' maxlength='40'></div>
       <div><small>Dano</small><input type='number' min='0' data-mh='${i}:dano' value='${+h.dano||0}'></div>
       <div><small>Atributo</small><select data-mh='${i}:attr'><option value=''>— nenhum —</option>${[['forca','Força'],['inte','Inteligência'],['agi','Agilidade']].map(([k,r])=>`<option value='${k}' ${h.attr===k?'selected':''}>${r}</option>`).join('')}</select></div>
       <button class='btn peq verm' data-act='monhabdel' data-i='${i}' title='Remover ataque'>✖</button>
-      <div class='d'><small>Descrição</small><input data-mh='${i}:desc' value='${escA(h.desc||'')}' maxlength='160'></div></div>`).join('')||`<div class='dica'>Nenhum ataque cadastrado: o monstro usa só o ataque básico.</div>`;
+      <div class='d' style='display:flex;gap:8px;flex-wrap:wrap'><div style='flex:1;min-width:150px'><small>Alcance</small><select data-mh='${i}:alvo'>${[['','Um alvo'],['area','Todos os heróis (área)'],['si','Em si mesmo']].map(([v,r])=>`<option value='${v}' ${(h.alvo||'')===v?'selected':''}>${r}</option>`).join('')}</select></div><div style='flex:1;min-width:120px'><small>Custo de estamina ⚡</small><input type='number' min='0' data-mh='${i}:custo' value='${+h.custo||0}'></div></div>
+      <div class='d'><small>Descrição</small><input data-mh='${i}:desc' value='${escA(h.desc||'')}' maxlength='160'></div>
+      ${efTxt(h)?`<div class='d'><small>${esc(efTxt(h))}</small></div>`:''}</div>`).join('')||`<div class='dica'>Nenhum ataque cadastrado: o monstro usa só o ataque básico.</div>`;
+  const resI=[['forca','Força (físico)'],['inte','Inteligência (magia)'],['agi','Agilidade (tiros)']].map(([k,r])=>`<div><small>Dano de ${r} (%)</small><input type='number' min='-90' max='300' data-mr='${k}' value='${(m.resist||{})[k]||0}'></div>`).join('');
+  const cab=ger?`<div class='dica'>🎲 <b>Monstro gerado</b> para ${m.geradoRef.N} herói(s) · nível médio ${m.geradoRef.lvl} · poder do grupo ${m.geradoRef.poder}. Revise e ajuste o que quiser. Para mudar a dificuldade, troque abaixo e use <b>🔄 Gerar novamente</b>.</div>`:'';
+  const fases=(m.fases||[]).length?`<div class='sec'>💀 Fases do combate</div>${m.fases.map(f=>`<div class='dica'><b>${esc(f.nome)}</b> (com ${f.pv}% de vida): ${esc(f.txt||'')}</div>`).join('')}<button class='btn peq verm' data-act='monfasesdel'>Remover fases</button>`:'';
+  const botoes=ger
+    ?`<p><label><input id='genSalvarLib' type='checkbox' checked style='width:auto'> Salvar também na biblioteca</label></p><p><button class='btn' data-act='genconfirmar'>⚔️ Confirmar e enviar para a arena</button> <button class='btn azul' data-act='genregerar'>🔄 Gerar novamente</button> <button class='btn azul' data-act='monsalvar'>💾 Salvar só na biblioteca</button> <button class='btn verm' data-act='moncancelar'>Cancelar</button></p>`
+    :`<p><button class='btn' data-act='monsalvar'>💾 Salvar na biblioteca</button> ${ed||m.nome?`<button class='btn verm' data-act='moncancelar'>Cancelar</button>`:''}</p>`;
   return `<div class='form cad'>
-    <div class='ctopo'><b>${ed?'✏️ Editar monstro':'👹 Novo monstro'}</b><small>Só o mestre vê esta aba</small></div>
+    <div class='ctopo'><b>${ger?'🎲 Prévia do monstro gerado':(ed?'✏️ Editar monstro':'👹 Novo monstro')}</b><small>Só o mestre vê esta aba</small></div>${cab}
     <div class='sec'>🪪 Identidade</div>
-    <div class='l'><div><small>Nome</small><input data-mf='nome' value='${escA(m.nome)}' maxlength='30'></div><div><small>Foto</small><input id='monFoto' type='file' accept='image/*'></div></div>
-    <div class='l'>${num('nivel','Nível')}<div><small>Dificuldade</small><select data-mf='dificuldade'>${DIFICULDADES.map(d=>`<option ${m.dificuldade===d?'selected':''}>${d}</option>`).join('')}</select></div></div>
-    <div class='l'><div><small>Descrição</small><textarea rows='2' data-mf='descricao' maxlength='400'>${esc(m.descricao||'')}</textarea></div></div>
+    <div class='l'><div><small>Nome</small><input data-mf='nome' value='${escA(m.nome)}' maxlength='30'></div><div><small>Foto ${ger?'(trocar imagem)':''}</small><input id='monFoto' type='file' accept='image/*'></div></div>
+    <div class='l'>${num('nivel','Nível')}<div><small>Dificuldade</small><select data-mf='dificuldade'>${DIFICULDADES.map(d=>`<option ${difNorm(m.dificuldade)===d?'selected':''}>${d}</option>`).join('')}</select></div></div>
+    <div class='l'><div><small>Descrição e história</small><textarea rows='2' data-mf='descricao' maxlength='400'>${esc(m.descricao||'')}</textarea></div></div>
     <div class='sec'>❤️ Vida</div>
     <div class='l'>${num('vidaMax','Vida máxima')}${num('vida','Vida atual')}</div>
     <div class='sec'>📊 Atributos</div>
     <div class='cattrs'>${MON_ATTRS.map(([k,r])=>`<div class='cattr'><b>${r}</b><input type='number' min='0' data-mf='${k}' value='${+m[k]||0}'></div>`).join('')}</div>
+    <div class='dica'>Carisma não se aplica: monstros rolam o dado puro.</div>
+    <div class='sec'>⚡ Estamina e comportamento</div>
+    <div class='l'>${num('estMax','Estamina máxima (0 = sem estamina)')}</div>
+    <div class='l'><div><small>Comportamento no combate (o jogo sugere a ação do monstro na vez dele)</small><textarea rows='2' data-mf='comportamento' maxlength='400'>${esc(m.comportamento||'')}</textarea></div></div>
+    <div class='sec'>🛡️ Resistências e fraquezas</div>
+    <div class='l'>${resI}</div><div class='dica'>Negativo = resiste (recebe menos dano); positivo = fraqueza. Ex.: −25 tira 25% do dano daquele atributo.</div>
     <div class='sec'>⚔️ Ataques e habilidades</div>
     <div class='l'>${num('dano','Ataque básico (dano)')}</div>
     ${habs}
     <button class='btn azul' data-act='monhabadd'>➕ Adicionar ataque</button>
-    <div class='dica'>Dano final do ataque = dano + 0,5 × atributo escolhido do monstro. Sem atributo, vale só o dano.</div>
-    <p><button class='btn' data-act='monsalvar'>💾 Salvar na biblioteca</button> ${ed||m.nome?`<button class='btn verm' data-act='moncancelar'>Cancelar</button>`:''}</p>
+    <div class='dica'>Dano final do ataque = dano + 0,5 × atributo escolhido do monstro. Sem atributo, vale só o dano. Com estamina, cada habilidade gasta o custo e o monstro recupera ${REGEN} por turno.</div>
+    ${fases}${botoes}
   </div>`;
 }
 function monCardHTML(m){
   const at=MON_ATTRS.filter(([k])=>+m[k]).map(([k,r])=>`${r.slice(0,3)} ${m[k]}`).join(' · ');
+  const hs=(m.habs||[]).map(h=>`${h.ic||'🗡️'} ${esc(h.nome)} (${h.alvo==='area'?'área ':''}${h.cura?'cura':'≈'+((+h.dano||0)+(h.attr?Math.round(.5*(+m[h.attr]||0)):0))}${h.custo?' · ⚡'+h.custo:''})`).join(' · ');
   return `<div class='mon-card'><div class='mini' ${fotoStyle(m)}>${emoji(m,true)}</div><div style='flex:1'>
-    <b>${esc(m.nome)}</b> <small>Nv ${m.nivel||1} · ${esc(m.dificuldade||'Normal')}</small><br>
-    <small>❤️ ${m.vida}/${m.vidaMax} · ⚔️ básico ${m.dano||0}${at?' · '+at:''}</small>
+    <b>${esc(m.nome)}</b> <small>Nv ${m.nivel||1} · ${esc(difNorm(m.dificuldade))}${m.gerado?' · 🎲 gerado':''}</small><br>
+    <small>❤️ ${m.vida}/${m.vidaMax} · ⚔️ básico ${m.dano||0}${m.estMax?' · ⚡ '+m.estMax:''}${at?' · '+at:''}</small>
     ${m.descricao?`<br><small><i>${esc(m.descricao)}</i></small>`:''}
-    ${(m.habs||[]).length?`<br><small>${m.habs.map(h=>`🗡️ ${esc(h.nome)} (${h.dano||0}${h.attr?' + '+ROT[h.attr]:''})`).join(' · ')}</small>`:''}
-    <div class='acoes'><button class='btn peq' data-act='monarena' data-id='${m.id}'>⚔️ Levar à arena</button><button class='btn peq azul' data-act='moneditar' data-id='${m.id}'>✏️ Editar</button><button class='btn peq verm' data-act='monapagar' data-id='${m.id}'>🗑️ Excluir</button></div>
+    ${hs?`<br><small>${hs}</small>`:''}
+    ${m.resistTxt&&Object.keys(m.resist||{}).length?`<br><small>🛡️ ${esc(m.resistTxt)}</small>`:''}
+    ${m.comportamento?`<br><small>🧠 ${esc(m.comportamento)}</small>`:''}
+    ${(m.fases||[]).length?`<br><small>💀 ${m.fases.map(f=>esc(f.nome)).join(' · ')}</small>`:''}
+    <div class='acoes'><button class='btn peq' data-act='monarena' data-id='${m.id}'>⚔️ Levar à arena</button><button class='btn peq azul' data-act='moneditar' data-id='${m.id}'>✏️ Editar</button><button class='btn peq azul' data-act='monduplicar' data-id='${m.id}'>📄 Duplicar</button><button class='btn peq verm' data-act='monapagar' data-id='${m.id}'>🗑️ Excluir</button></div>
   </div></div>`;
 }
 function renderMonstros(force){
   const el=$('monstrosConteudo');if(!el||PAPEL==='jogador')return;
   const ae=document.activeElement;
   if(!force&&ae&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;
-  const sig=JSON.stringify([monLista(),monDraft&&monDraft.id]);
+  const sig=JSON.stringify([monLista(),monDraft&&monDraft.id,monDraft&&monDraft.gerado,genAberto,genDif,genSel&&[...genSel],estado.jogadores.map(p=>[p.id,p.nome,p.arena,p.nivel,p.vidaMax])]);
   if(!force&&sig===sigMon)return;
   sigMon=sig;
   const L=monLista();
-  el.innerHTML=(monDraft?monFormHTML():`<p style='text-align:center'><button class='btn' data-act='monnovo'>👹 Criar novo monstro</button></p>`)
+  const topo=`<p style='text-align:center'><button class='btn' data-act='monnovo'>👹 Criar novo monstro</button> <button class='btn azul' data-act='genabrir'>🎲 Gerador de Monstros</button></p>`;
+  el.innerHTML=(monDraft?monFormHTML():(genAberto?genPainelHTML():topo))
     +`<h2>📚 Biblioteca de monstros</h2>`+(L.map(monCardHTML).join('')||`<div class='vazio'>Nenhum monstro na biblioteca ainda.</div>`);
 }
 /* Atualiza o rascunho a cada tecla (sem redesenhar a tela). */
 function monInput(e){
   const t=e.target;if(!monDraft||!t||!t.dataset)return;
   if(t.dataset.mf){const k=t.dataset.mf;monDraft[k]=t.type==='number'?Math.max(0,parseInt(t.value)||0):t.value}
-  else if(t.dataset.mh){const [i,k]=t.dataset.mh.split(':'),h=monDraft.habs[+i];if(h)h[k]=k==='dano'?Math.max(0,parseInt(t.value)||0):t.value}
+  else if(t.dataset.mh){const [i,k]=t.dataset.mh.split(':'),h=monDraft.habs[+i];if(h)h[k]=(k==='dano'||k==='custo')?Math.max(0,parseInt(t.value)||0):t.value}
+  else if(t.dataset.mr){monDraft.resist=monDraft.resist||{};const v=parseInt(t.value)||0;if(v)monDraft.resist[t.dataset.mr]=v;else delete monDraft.resist[t.dataset.mr]}
 }
 function monSalvar(){
   const m=monDraft;if(!m)return;
-  m.nome=String(m.nome||'').trim().slice(0,30);
-  if(!m.nome){toast('Dê um nome ao monstro.');return}
-  m.nivel=Math.max(1,+m.nivel||1);m.vidaMax=Math.max(1,+m.vidaMax||1);m.vida=Math.min(m.vidaMax,Math.max(0,+m.vida||0));
-  m.habs=m.habs.filter(h=>String(h.nome||'').trim()).map(h=>({nome:String(h.nome).trim().slice(0,40),dano:Math.max(0,+h.dano||0),attr:h.attr||'',desc:String(h.desc||'').slice(0,160)}));
+  if(!monPrepararDraft(m))return;
   const f=$('monFoto')&&$('monFoto').files[0];
-  const fim=foto=>{if(foto)m.foto=foto;monSalvarLib(m);monDraft=null;renderMonstros(true);toast('💾 Monstro salvo na biblioteca!')};
+  const fim=foto=>{if(foto)m.foto=foto;monSalvarLib(m);monDraft=null;genAberto=false;renderMonstros(true);toast('💾 Monstro salvo na biblioteca!')};
   if(f)lerFoto('monFoto').then(fim);else fim('');
 }
 /* Copia o modelo para a arena como monstro jogavel (ataques viram habsM). */
 function monParaArena(id){
   const m=monLista().find(x=>x.id===id);if(!m)return;
-  const t=Date.now();
-  estado.monstros.push({id:t,nome:m.nome,foto:m.foto||'',descricao:m.descricao||'',nivel:m.nivel,dificuldade:m.dificuldade,vida:m.vida,vidaMax:m.vidaMax,dano:m.dano,
-    forca:m.forca,inte:m.inte,agi:m.agi,con:m.con,car:m.car,
-    habsM:(m.habs||[]).map((h,i)=>({id:'m'+t+'_'+i,nome:h.nome,ic:'🗡️',custo:0,fixo:h.dano,attr:h.attr||undefined,f:h.attr?{[h.attr]:.5}:{},desc:h.desc||''})),
-    arena:true,lado:'D',status:[]});
+  estado.monstros.push(monCriarInstancia(m));
   logar(`👹 <b>${esc(m.nome)}</b> entrou na arena.`);salvar();desenhar();toast('👹 Monstro na arena!');
 }
 
+/* ======================= GERADOR DE MONSTROS =======================
+   Le os herois reais (nivel, vida, atributos, habilidades, estamina) e monta uma ficha completa balanceada para a dificuldade escolhida.
+   Usa as mesmas regras do jogo: dano = dano fixo + 0,5 x atributo, rolagem de dado puro, estamina com custo por habilidade, efeitos/status. */
+const difNorm=d=>({Normal:'Médio',Chefe:'Chefão'})[d]||d||'Médio';
+const GEN_DIF={
+ 'Fácil':{ic:'🟢',T:3,f:.30,af:.70,cap:.25,estMax:12,share:0,hpMult:.9,desc:'Atributos abaixo dos heróis, pouca vida e dano, habilidades simples. Combate rápido, baixo risco.'},
+ 'Médio':{ic:'🟡',T:5,f:.6,af:1,cap:.44,estMax:18,share:.15,hpMult:1,desc:'Equilibrado com o grupo, com algumas habilidades especiais. Exige estratégia, sem exagero.'},
+ 'Difícil':{ic:'🟠',T:7,f:1,af:1.25,cap:.55,estMax:24,share:.25,hpMult:1,desc:'Atributos acima dos heróis, mais vida e dano, efeitos estratégicos. Exige cooperação.'},
+ 'Chefão':{ic:'🔴',T:10,f:1.15,af:1.5,cap:.70,estMax:30,share:.4,hpMult:1,desc:'Feito para o grupo inteiro: vida enorme, ataques em área, habilidades exclusivas e mudança de fase.'}
+};
+const GEN_ARQ=[
+ {id:'fera',ic:'🦈',w:{forca:1,inte:.25,agi:.6,con:.9},resist:{forca:-20,inte:25},
+  nomes:['Tubarão-Martelo','Moreia Abissal','Lula Gigante','Cachalote Furioso','Serpente do Recife','Kraken Menor'],
+  descs:['Fera das profundezas que emergiu atraída pelo cheiro de sangue dos navios.','Criatura colossal do fundo do mar, cresceu devorando tripulações inteiras.','Os marinheiros juram que este monstro persegue navios há gerações.'],
+  habs:[
+   {n:'Mordida Brutal',ic:'🦈',cat:'dano',m:1,a:'forca',d:'Uma mordida esmagadora.'},
+   {n:'Cabeçada Marinha',ic:'🐋',cat:'dano',m:1.1,a:'forca',d:'Investe contra o alvo com toda a força.'},
+   {n:'Constrição',ic:'🪢',cat:'efeito',m:.7,a:'forca',ef:{nome:'Preso',ic:'🪢',t:2,rolo:-3},d:'Agarra o alvo: -3 nas rolagens por 2 turnos.'},
+   {n:'Tinta Negra',ic:'🌑',cat:'efeito',m:.5,a:'agi',ef:{nome:'Cegueira',ic:'🌑',t:2,rolo:-3},d:'Nuvem de tinta: o alvo rola com -3 por 2 turnos.'},
+   {n:'Onda Devastadora',ic:'🌊',cat:'area',m:.75,a:'forca',d:'Uma onda enorme atinge todos os heróis.'},
+   {n:'Tentáculos em Fúria',ic:'🐙',cat:'area',m:.7,a:'forca',d:'Chicoteia todos os heróis de uma vez.'},
+   {n:'Frenesi',ic:'😡',cat:'especial',buff:{nome:'Frenesi',ic:'😡',t:3,atq:30},d:'Entra em frenesi: +30% de dano por 3 turnos.'},
+   {n:'Regeneração Marinha',ic:'💚',cat:'especial',cura:.15,d:'Recupera parte da vida.'},
+   {n:'Fúria do Abismo',ic:'🌀',cat:'ult',m:1,a:'forca',forte:1,d:'Ataque devastador em área, exclusivo da fase final.'}]},
+ {id:'morto',ic:'💀',w:{forca:1,inte:.5,agi:.5,con:.8},resist:{forca:-15,inte:25},
+  nomes:['Marujo Amaldiçoado','Esqueleto do Convés','Contramestre Morto-Vivo','Capitão Sem Alma','Fantasma da Pérola','Pirata Ressurgido'],
+  descs:['Tripulante que jurou nunca largar o tesouro, nem depois da morte.','Um velho lobo do mar que o naufrágio não deixou descansar.','Sua maldição nasceu de um pacto quebrado entre capitães.'],
+  habs:[
+   {n:'Sabre Enferrujado',ic:'🗡️',cat:'dano',m:1,a:'forca',ef:{nome:'Sangramento',ic:'🩸',t:3,dot:.2},d:'Corte que faz o alvo sangrar por 3 turnos.'},
+   {n:'Machadada Podre',ic:'🪓',cat:'dano',m:1.1,a:'forca',d:'Golpe pesado de machado.'},
+   {n:'Maldição do Naufrágio',ic:'☠️',cat:'efeito',m:.6,a:'inte',ef:{nome:'Maldição',ic:'☠️',t:3,rolo:-2},d:'-2 nas rolagens do alvo por 3 turnos.'},
+   {n:'Olhar Sepulcral',ic:'👁️',cat:'efeito',m:.5,a:'inte',ef:{nome:'Medo',ic:'😨',t:2,atq:-25},d:'O alvo causa 25% menos dano por 2 turnos.'},
+   {n:'Grito Sepulcral',ic:'📢',cat:'area',m:.7,a:'inte',d:'Um grito que gela todos os heróis.'},
+   {n:'Salva de Canhões Fantasma',ic:'💣',cat:'area',m:.75,a:'forca',d:'Canhões espectrais disparam contra o grupo.'},
+   {n:'Fúria dos Condenados',ic:'😡',cat:'especial',buff:{nome:'Fúria',ic:'😡',t:3,atq:30},d:'+30% de dano por 3 turnos.'},
+   {n:'Levantar dos Mortos',ic:'💚',cat:'especial',cura:.12,d:'Recupera vida com energia sombria.'},
+   {n:'Tempestade de Almas',ic:'🌪️',cat:'ult',m:1,a:'inte',forte:1,d:'Ataque em área exclusivo da fase final.'}]},
+ {id:'espirito',ic:'👻',w:{inte:1,agi:.7,forca:.3,con:.5},resist:{forca:-30,inte:20},
+  nomes:['Sereia Amaldiçoada','Espectro das Marés','Fantasma do Farol','Alma Afogada','Banshee do Naufrágio','Dama das Brumas'],
+  descs:['Espírito preso ao mar que atrai marinheiros com cantos tristes.','Nasceu do último suspiro de uma tripulação inteira.','Seu lamento é ouvido nas noites sem lua, antes de cada naufrágio.'],
+  habs:[
+   {n:'Toque Gélido',ic:'🧊',cat:'dano',m:.9,a:'inte',ef:{nome:'Gelo',ic:'🧊',t:3,dot:.2},d:'Gela o alvo, causando dano por 3 turnos.'},
+   {n:'Canto Lúgubre',ic:'🎶',cat:'dano',m:1,a:'inte',d:'Uma melodia que fere a alma.'},
+   {n:'Hipnose Marinha',ic:'🌀',cat:'efeito',m:.4,a:'inte',ef:{nome:'Hipnotizado',ic:'🌀',t:1,pular:1},d:'O alvo perde a próxima vez.'},
+   {n:'Lamento',ic:'😭',cat:'efeito',m:.5,a:'inte',ef:{nome:'Desespero',ic:'😭',t:2,rolo:-2},d:'-2 nas rolagens do alvo por 2 turnos.'},
+   {n:'Tempestade Espectral',ic:'⛈️',cat:'area',m:.7,a:'inte',d:'Uma tempestade de almas atinge todos.'},
+   {n:'Coro dos Afogados',ic:'🎼',cat:'area',m:.65,a:'inte',d:'Vozes do além ferem todo o grupo.'},
+   {n:'Névoa Etérea',ic:'🌫️',cat:'especial',buff:{nome:'Intangível',ic:'🌫️',t:2,vuln:-35},d:'Fica intangível: recebe 35% menos dano por 2 turnos.'},
+   {n:'Drenar Vida',ic:'💚',cat:'especial',cura:.15,d:'Rouba energia vital para si.'},
+   {n:'Lamento Final',ic:'💫',cat:'ult',m:1,a:'inte',forte:1,d:'Ataque em área exclusivo da fase final.'}]},
+ {id:'peconhenta',ic:'🐍',w:{agi:1,forca:.5,inte:.2,con:.6},resist:{forca:15,agi:-20},
+  nomes:['Serpente-do-Mar','Caranguejo-Aranha','Água-viva Gigante','Escorpião de Coral','Raia Venenosa','Lagosta Carnívora'],
+  descs:['Predador do recife que caça em silêncio e ataca com veneno.','Seus ferrões já derrubaram navios inteiros de marujos.','Uma criatura ágil e traiçoeira, difícil de acertar.'],
+  habs:[
+   {n:'Picada Veloz',ic:'🐍',cat:'dano',m:1,a:'agi',d:'Uma picada rápida e certeira.'},
+   {n:'Ferrão Venenoso',ic:'🦂',cat:'dano',m:.9,a:'agi',ef:{nome:'Veneno',ic:'☠️',t:3,dot:.2},d:'Envenena o alvo por 3 turnos.'},
+   {n:'Veneno Paralisante',ic:'💉',cat:'efeito',m:.5,a:'agi',ef:{nome:'Paralisia',ic:'💉',t:2,atq:-30},d:'O alvo causa 30% menos dano por 2 turnos.'},
+   {n:'Teia de Algas',ic:'🕸️',cat:'efeito',m:.4,a:'agi',ef:{nome:'Enredado',ic:'🕸️',t:2,rolo:-3},d:'-3 nas rolagens do alvo por 2 turnos.'},
+   {n:'Nuvem Tóxica',ic:'☁️',cat:'area',m:.65,a:'agi',ef:{nome:'Intoxicado',ic:'☁️',t:2,dot:.15},d:'Gás tóxico envolve todos os heróis.'},
+   {n:'Chuva de Espinhos',ic:'🌵',cat:'area',m:.7,a:'agi',d:'Espinhos atingem todo o grupo.'},
+   {n:'Carapaça Endurecida',ic:'🛡️',cat:'especial',buff:{nome:'Carapaça',ic:'🛡️',t:3,vuln:-35},d:'Recebe 35% menos dano por 3 turnos.'},
+   {n:'Trocar de Pele',ic:'💚',cat:'especial',cura:.12,d:'Muda de pele e recupera vida.'},
+   {n:'Ataque Mortal',ic:'☠️',cat:'ult',m:1,a:'agi',forte:1,d:'Ataque em área exclusivo da fase final.'}]},
+ {id:'golem',ic:'🪨',w:{forca:1,con:1,agi:.2,inte:.2},resist:{forca:-30,inte:20},
+  nomes:['Golem de Coral','Colosso de Casco','Caranguejo-Fortaleza','Guardião do Recife','Titã de Âncoras','Gigante de Pedra'],
+  descs:['Um guardião de pedra e coral, imóvel por séculos, desperto pelo barulho da batalha.','Feito de cascos de navios e âncoras fundidas pela maré.','Lento, mas cada golpe seu abala o chão do convés.'],
+  habs:[
+   {n:'Punho de Pedra',ic:'👊',cat:'dano',m:1.1,a:'forca',d:'Um soco pesado.'},
+   {n:'Esmagar',ic:'🔨',cat:'dano',m:1.25,a:'forca',d:'Desce o punho com força total.'},
+   {n:'Rachadura Sísmica',ic:'🌋',cat:'efeito',m:.6,a:'forca',ef:{nome:'Abalado',ic:'💫',t:2,atq:-25},d:'O alvo causa 25% menos dano por 2 turnos.'},
+   {n:'Pó de Coral',ic:'🌫️',cat:'efeito',m:.4,a:'forca',ef:{nome:'Cegueira',ic:'🌫️',t:2,rolo:-3},d:'-3 nas rolagens do alvo por 2 turnos.'},
+   {n:'Terremoto',ic:'🌍',cat:'area',m:.75,a:'forca',d:'O chão treme e atinge todos os heróis.'},
+   {n:'Chuva de Pedras',ic:'🪨',cat:'area',m:.65,a:'forca',d:'Pedras desabam sobre o grupo.'},
+   {n:'Casco de Pedra',ic:'🛡️',cat:'especial',buff:{nome:'Casco de Pedra',ic:'🛡️',t:3,vuln:-40},d:'Recebe 40% menos dano por 3 turnos.'},
+   {n:'Reconstruir',ic:'💚',cat:'especial',cura:.1,d:'Junta os próprios pedaços e recupera vida.'},
+   {n:'Desmoronar',ic:'💥',cat:'ult',m:1,a:'forca',forte:1,d:'Ataque em área exclusivo da fase final.'}]},
+ {id:'cultista',ic:'🔮',w:{inte:1,agi:.5,forca:.3,con:.6},resist:{inte:-20,forca:20},
+  nomes:['Cultista das Marés','Feiticeiro do Abismo','Bruxa do Pântano Salgado','Necromante de Naufrágios','Sacerdote do Kraken','Xamã das Tormentas'],
+  descs:['Servo de um poder antigo que mora sob as ondas.','Aprendeu magia proibida nos livros de um navio naufragado.','Quer sacrificar a tripulação ao deus das profundezas.'],
+  habs:[
+   {n:'Raio Sombrio',ic:'⚡',cat:'dano',m:1,a:'inte',d:'Um raio de energia sombria.'},
+   {n:'Chama Arcana',ic:'🔥',cat:'dano',m:.9,a:'inte',ef:{nome:'Queimadura',ic:'🔥',t:3,dot:.2},d:'Queima o alvo por 3 turnos.'},
+   {n:'Maldição Menor',ic:'☠️',cat:'efeito',m:.5,a:'inte',ef:{nome:'Maldição',ic:'☠️',t:3,rolo:-3},d:'-3 nas rolagens do alvo por 3 turnos.'},
+   {n:'Selo do Silêncio',ic:'🔇',cat:'efeito',m:.5,a:'inte',ef:{nome:'Enfraquecido',ic:'🔇',t:2,atq:-30},d:'O alvo causa 30% menos dano por 2 turnos.'},
+   {n:'Tempestade Arcana',ic:'🌩️',cat:'area',m:.7,a:'inte',d:'Raios arcanos caem sobre todos.'},
+   {n:'Explosão Abissal',ic:'💥',cat:'area',m:.8,a:'inte',d:'Uma explosão de energia atinge o grupo.'},
+   {n:'Escudo Arcano',ic:'🛡️',cat:'especial',buff:{nome:'Escudo Arcano',ic:'🔰',t:3,vuln:-35},d:'Recebe 35% menos dano por 3 turnos.'},
+   {n:'Pacto de Sangue',ic:'💚',cat:'especial',cura:.15,d:'Troca sangue por poder e recupera vida.'},
+   {n:'Invocação Final',ic:'🌀',cat:'ult',m:1,a:'inte',forte:1,d:'Ataque em área exclusivo da fase final.'}]}
+];
+const GEN_PRE={'Fácil':['Jovem','Pequeno','Filhote de'],'Médio':[''],'Difícil':[''],'Chefão':['']};
+const GEN_SUF={'Fácil':[''],'Médio':[''],'Difícil':['Sombrio','Voraz','Feroz','das Brumas'],'Chefão':['Abissal','Ancestral','Colossal','Supremo']};
+const genPick=a=>a[Math.floor(Math.random()*a.length)];
+const genShuffle=a=>{const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r};
+/* ---- poder real dos herois ---- */
+function genDptHero(p){
+  const hit=Math.max(.2,Math.min(.95,(11+bonusCarisma(p,20))/20));
+  const dm=habsDe(p).filter(h=>h.f).map(h=>({d:calcDano(p,h),c:custoDe(p,h)})).sort((a,b)=>b.d-a.d);
+  if(!dm.length)return Math.max(4,attrTot(p,'forca')*.8)*hit*.8;
+  const top=dm.slice(0,3),med=top.reduce((x,y)=>x+y.d,0)/top.length,cm=Math.max(1,top.reduce((x,y)=>x+y.c,0)/top.length);
+  const folego=Math.min(1,((p.estMax||ESTAMINA_BASE)+REGEN*4)/(cm*4));
+  return med*hit*1.05*folego;
+}
+function genForcaGrupo(hs){
+  const N=hs.length||1;let dpt=0,ehp=0,hp=0,somaLvl=0,at=0;
+  hs.forEach(p=>{
+    dpt+=genDptHero(p);hp+=p.vidaMax||0;somaLvl+=(p.nivel||1);
+    const hb=habsDe(p);let def=1;
+    def+=Math.min(.3,.1*hb.filter(h=>[].concat(h.efSi||[],h.efAl||[]).some(e=>e&&(e.escudo||e.vuln<0))).length);
+    def+=Math.min(.2,.1*hb.filter(h=>h.cura).length);
+    ehp+=(p.vidaMax||0)*def;
+    at+=Math.max(attrTot(p,'forca'),attrTot(p,'inte'),attrTot(p,'agi'));
+  });
+  dpt=Math.max(4,dpt);ehp=Math.max(40,ehp);
+  return {N,dpt,ehp,hp:Math.round(hp),lvl:somaLvl/N,attr:at/N,poder:Math.round(Math.sqrt(dpt*ehp))};
+}
+const GEN_ATRN={forca:'Força',inte:'Inteligência',agi:'Agilidade'};
+function genResistTxt(r){
+  const L=Object.entries(r||{}).filter(([k,v])=>v).map(([k,v])=>v<0?`Resiste a ${k==='forca'?'golpes físicos':k==='inte'?'magia':'tiros e agilidade'} (${v}% de dano)`:`Fraco contra ${k==='forca'?'golpes físicos':k==='inte'?'magia':'tiros e agilidade'} (+${v}% de dano)`);
+  return L.join('; ')||'Sem resistências nem fraquezas.';
+}
+function genHab(s,c){
+  const a=s.a||GEN_ARQ.find(x=>x.id===c.arq.id).habs[0].a,A=Math.max(1,c.at[a]||1);
+  const area=s.cat==='area'||s.cat==='ult';
+  let Dt=c.D*(s.m||0)*(area?.6:1);
+  const o={nome:s.n,ic:s.ic,desc:s.d,attr:'',dano:0};
+  if(s.m){o.attr=a;o.dano=Math.max(1,Math.round(Dt-.5*A))}
+  if(area)o.alvo='area';
+  if(s.forte)o.forte=true;
+  const efs=e=>{const r={nome:e.nome,ic:e.ic,t:e.t||2};if(e.rolo)r.rolo=e.rolo;if(e.atq)r.atq=e.atq;if(e.vuln)r.vuln=e.vuln;if(e.pular)r.pular=true;if(e.dot)r.dotF={[a]:Math.max(.05,Math.round(100*e.dot*c.D/A)/100)};return r};
+  if(s.ef)o.ef=efs(s.ef);
+  if(s.buff){o.efSi=efs(s.buff);o.alvo='si'}
+  if(s.cura){const con=Math.max(1,c.at.con||1);o.cura={f:{con:Math.max(.2,Math.round(100*s.cura*c.vidaMax/con)/100)}};o.alvo='si'}
+  o.custo=Math.max(2,Math.round((s.m||0)*5+(area?3:0)+(s.ef?1:0)+(s.forte?3:0)+((s.buff||s.cura)?5:0)));
+  return o;
+}
+function genEscolherHabs(arq,dif,N){
+  const por=c=>genShuffle(arq.habs.filter(h=>h.cat===c));
+  const dano=por('dano'),efe=por('efeito'),area=por('area'),esp=por('especial');
+  const forte=dano[0]?Object.assign({},dano[0],{m:dano[0].m*1.25}):null;
+  let L=[];
+  if(dif==='Fácil')L=[dano[0]];
+  else if(dif==='Médio')L=[dano[0],efe[0]||esp[0],N>=3?area[0]:null]; /* grupo grande: um ataque em area para nao ficar em desvantagem de acoes */
+  else if(dif==='Difícil')L=[dano[0],efe[0],area[0]];
+  else L=[forte,area[0],efe[0],esp[0]];
+  return L.filter(Boolean);
+}
+function genComport(dif,hs){
+  const dano=hs.find(h=>!h.alvo&&!h.ef&&!h.cura),ef=hs.find(h=>h.ef&&!h.alvo),ar=hs.find(h=>h.alvo==='area'),esp=hs.find(h=>h.cura||h.efSi);
+  const n=h=>h?h.nome:'o golpe básico';
+  if(dif==='Fácil')return `Previsível: ataca sempre o primeiro herói, alternando o golpe básico com ${n(dano)}.`;
+  if(dif==='Médio')return `Alterna ataque e defesa: golpeia o herói mais ferido com ${n(dano)}${ef?` e ${n(ef)}`:''} e, com menos de 40% de vida, usa ${esp?n(esp):'o golpe mais forte'}.`;
+  if(dif==='Difícil')return `Estratégico: ${ef?`abre com ${n(ef)} no herói mais perigoso, `:''}${ar?`usa ${n(ar)} quando há 2 ou mais heróis, `:''}e finaliza quem estiver ferido com ${n(dano)}.`;
+  return `Padrão em ciclo de 4 turnos: 1) ${ef?n(ef):'ataque forte'} no herói mais perigoso, 2) ${ar?n(ar):'ataque em área'}, 3) ${n(dano)} em quem estiver mais ferido, 4) ${esp?n(esp):'recuperação'}. Com 50% de vida muda de fase, ganha mais dano e uma habilidade exclusiva.`;
+}
+function gerarMonstro(refs,dif,foto,evitar){
+  dif=GEN_DIF[dif]?dif:'Médio';
+  const P=GEN_DIF[dif],A=genForcaGrupo(refs);
+  const cands=GEN_ARQ.filter(a=>a.id!==evitar),arq=genPick(cands.length?cands:GEN_ARQ);
+  /* dano alvo por golpe: orcamento de pressao sobre o grupo, corrigido por ataques em area e limitado pela vida de cada heroi */
+  const D0=A.ehp*P.f/(P.T*.58),fator=1+P.share*Math.max(0,.6*Math.min(A.N,5)-1);
+  const D=Math.max(4,Math.round(Math.min(D0/fator,P.cap*A.hp/A.N)));
+  const base=Math.min(Math.max(4,Math.round(A.attr*P.af)),Math.max(4,D));
+  const at={};['forca','inte','agi','con'].forEach(k=>{at[k]=Math.max(1,Math.round(base*(arq.w[k]||.3)))});
+  const vidaMax=Math.max(25,Math.round(A.dpt*P.T*P.hpMult));
+  const c={D,at,vidaMax,arq},habs=genEscolherHabs(arq,dif,A.N).map(s=>genHab(s,c));
+  const nome=(genPick(GEN_PRE[dif])+' '+genPick(arq.nomes)+' '+genPick(GEN_SUF[dif])).replace(/\s+/g,' ').trim().slice(0,30);
+  const fm={'Fácil':0,'Médio':.6,'Difícil':1,'Chefão':1.2}[dif],resist={};
+  Object.entries(arq.resist).forEach(([k,v])=>{const x=Math.round(v*fm/5)*5;if(x)resist[k]=x});
+  let fases=[];
+  if(dif==='Chefão'){const ult=arq.habs.find(h=>h.cat==='ult');if(ult)fases=[{pv:50,nome:'Fase 2: '+ult.n,txt:'Fúria total: +25% de dano e '+ult.n+' liberado.',mult:1.25,habs:[genHab(ult,c)]}]}
+  return {id:Date.now(),nome,foto:foto||'',icone:arq.ic,
+    descricao:(genPick(arq.descs)+` Recomendado para ${A.N} herói(s) de nível ~${Math.round(A.lvl)}.`).slice(0,400),
+    nivel:Math.max(1,Math.round(A.lvl)),dificuldade:dif,vida:vidaMax,vidaMax,dano:Math.max(2,Math.round(D*.45)),
+    forca:at.forca,inte:at.inte,agi:at.agi,con:at.con,car:0,habs,estMax:P.estMax,
+    comportamento:genComport(dif,habs),resist,resistTxt:genResistTxt(resist),fases,arquetipo:arq.id,gerado:true,
+    geradoRef:{N:A.N,lvl:+A.lvl.toFixed(1),poder:A.poder,dpt:Math.round(A.dpt),hp:A.hp}};
+}
+/* ---- painel do gerador (aba Monstros) ---- */
+let genAberto=false,genDif='Médio',genSel=null; /* genSel: null = herois da arena; ou Set de ids escolhidos a mao */
+const genRefs=()=>estado.jogadores.filter(p=>genSel?genSel.has(p.id):p.arena);
+function genToggle(id){
+  if(genSel===null)genSel=new Set(estado.jogadores.filter(p=>p.arena).map(p=>p.id));
+  genSel.has(id)?genSel.delete(id):genSel.add(id);renderMonstros(true);
+}
+function genPainelHTML(){
+  const refs=genRefs(),A=genForcaGrupo(refs),manual=genSel!==null;
+  const lista=estado.jogadores.map(p=>{const on=refs.includes(p);return `<label class='gen-her'><input type='checkbox' data-act='gensel' data-id='${p.id}' ${on?'checked':''}> <b>${esc(p.nome)}</b> <small>Nv ${p.nivel||1} · ❤️ ${p.vidaMax} · ⚡ ${p.estMax} · ~${Math.round(genDptHero(p))} dano/rodada · ${habsDe(p).length} habilidade(s)${p.arena?' · 🏟️ na arena':''}</small></label>`}).join('')||`<div class='vazio'>Nenhum herói cadastrado.</div>`;
+  const resumo=refs.length?`<div class='dica'>👥 <b>${A.N}</b> herói(s) · nível médio <b>${A.lvl.toFixed(1)}</b> · vida total <b>${A.hp}</b> · dano do grupo ~<b>${Math.round(A.dpt)}</b>/rodada · poder do grupo <b>${A.poder}</b></div>`:`<div class='dica'>⚠️ Nenhum herói selecionado. ${estado.jogadores.some(p=>p.arena)?'':'Não há heróis na arena: marque abaixo os heróis de referência.'}</div>`;
+  const difs=Object.entries(GEN_DIF).map(([d,x])=>`<button class='btn ${genDif===d?'':'azul'}' data-act='gendif' data-d='${d}'>${x.ic} ${d}</button>`).join(' ');
+  return `<div class='form cad'>
+    <div class='ctopo'><b>🎲 Gerador de Monstros</b><small>Escolha a dificuldade e a imagem: a ficha sai pronta e balanceada para o seu grupo</small></div>
+    <div class='sec'>👥 Heróis de referência ${manual?'<small>(seleção manual)</small>':'<small>(heróis na arena)</small>'}</div>
+    <div class='gen-lista'>${lista}</div>${resumo}
+    <div class='sec'>⚔️ Dificuldade</div>
+    <div class='gen-difs'>${difs}</div><div class='dica'>${GEN_DIF[genDif].desc}</div>
+    <div class='sec'>🖼️ Imagem do monstro</div>
+    <div class='l'><div><small>Escolha uma imagem (opcional; sem imagem usa um ícone)</small><input id='genFoto' type='file' accept='image/*'></div></div>
+    <p><button class='btn' data-act='gengerar'>🎲 Gerar monstro</button> <button class='btn verm' data-act='genfechar'>Fechar</button></p>
+    <div class='dica'>O monstro só vai para a arena depois que você revisar e confirmar a ficha.</div></div>`;
+}
+async function genGerar(){
+  if(PAPEL!=='mestre')return;
+  const refs=genRefs();if(!refs.length){toast('Selecione ao menos um herói de referência.');return}
+  const f=$('genFoto')&&$('genFoto').files[0];
+  const foto=f?await lerFoto('genFoto'):'';
+  monDraft=gerarMonstro(refs,genDif,foto,null);genAberto=false;renderMonstros(true);toast('🎲 Monstro gerado! Revise a ficha.');
+}
+async function genRegerar(){
+  if(PAPEL!=='mestre'||!monDraft)return;
+  const refs=genRefs();if(!refs.length){toast('Selecione heróis de referência no gerador.');return}
+  let foto=monDraft.foto||'';const f=$('monFoto')&&$('monFoto').files[0];if(f)foto=await lerFoto('monFoto');
+  const dif=difNorm(monDraft.dificuldade);genDif=dif;
+  monDraft=gerarMonstro(refs,dif,foto,monDraft.arquetipo);renderMonstros(true);toast('🔄 Novo monstro gerado.');
+}
+function monHabInst(h,id){return {id,nome:h.nome,ic:h.ic||'🗡️',custo:+h.custo||0,fixo:+h.dano||0,attr:h.attr||undefined,f:h.attr?{[h.attr]:.5}:{},desc:h.desc||'',alvo:h.alvo||undefined,ef:h.ef,efSi:h.efSi,cura:h.cura,forte:h.forte?1:undefined}}
+function monCriarInstancia(m){
+  const t=Date.now();
+  const inst={id:t,nome:m.nome,foto:m.foto||'',icone:m.icone,descricao:m.descricao||'',nivel:m.nivel,dificuldade:difNorm(m.dificuldade),vida:m.vida,vidaMax:m.vidaMax,dano:m.dano,forca:m.forca,inte:m.inte,agi:m.agi,con:m.con,car:m.car,
+    habsM:(m.habs||[]).map((h,i)=>monHabInst(h,'m'+t+'_'+i)),arena:true,lado:'D',status:[]};
+  if(m.estMax){inst.estMax=m.estMax;inst.est=m.estMax}
+  if(m.resist&&Object.keys(m.resist).length)inst.resist=Object.assign({},m.resist);
+  if(m.fases&&m.fases.length){inst.fases=JSON.parse(JSON.stringify(m.fases));inst.faseAtual=1}
+  if(m.comportamento)inst.comportamento=m.comportamento;
+  return inst;
+}
+function monPrepararDraft(m){
+  m.nome=String(m.nome||'').trim().slice(0,30);
+  if(!m.nome){toast('Dê um nome ao monstro.');return false}
+  m.nivel=Math.max(1,+m.nivel||1);m.vidaMax=Math.max(1,+m.vidaMax||1);m.vida=Math.min(m.vidaMax,Math.max(0,+m.vida||0));
+  m.habs=m.habs.filter(h=>String(h.nome||'').trim()).map(h=>{const o=Object.assign({},h,{nome:String(h.nome).trim().slice(0,40),dano:Math.max(0,+h.dano||0),attr:h.attr||'',desc:String(h.desc||'').slice(0,160),custo:Math.max(0,+h.custo||0)});if(!o.alvo)delete o.alvo;return o});
+  m.estMax=Math.max(0,+m.estMax||0);if(!m.estMax)delete m.estMax;
+  m.resist=m.resist||{};Object.keys(m.resist).forEach(k=>{if(!m.resist[k])delete m.resist[k]});m.resistTxt=genResistTxt(m.resist);
+  m.dificuldade=difNorm(m.dificuldade);
+  return true;
+}
+function genConfirmar(){ /* confirma a ficha revisada e envia para a arena (opcionalmente salva na biblioteca) */
+  if(PAPEL!=='mestre'||!monDraft)return;const m=monDraft;
+  if(!monPrepararDraft(m))return;
+  const f=$('monFoto')&&$('monFoto').files[0],salvar_=$('genSalvarLib')&&$('genSalvarLib').checked;
+  const fim=foto=>{
+    if(foto)m.foto=foto;
+    estado.monstros.push(monCriarInstancia(m));
+    logar(`👹 <b>${esc(m.nome)}</b> entrou na arena.`);
+    if(salvar_)monSalvarLib(JSON.parse(JSON.stringify(m)));
+    monDraft=null;genAberto=false;salvar();desenhar();renderMonstros(true);toast('👹 Monstro na arena!'+(salvar_?' (salvo na biblioteca)':''));
+  };
+  if(f)lerFoto('monFoto').then(fim);else fim('');
+}
+/* ---- comportamento durante o combate: sugestao de acao conforme a dificuldade ---- */
+function monstroSugestao(m){
+  const alvos=estado.jogadores.filter(p=>p.lado!==m.lado&&p.vida>0&&p.arena&&!temEf(p,'oculto'));
+  if(!alvos.length)return null;
+  const dif=difNorm(m.dificuldade),n=m.agiu||0,pct=m.vidaMax?m.vida/m.vidaMax:1,fase=m.faseAtual||1;
+  const habs=(m.habsM||[]).filter(h=>m.estMax===undefined||m.est>=custoDe(m,h));
+  const area=habs.filter(h=>h.alvo==='area'),esp=habs.filter(h=>h.cura||h.alvo==='si');
+  const efe=habs.filter(h=>h.ef&&h.alvo!=='area'&&h.alvo!=='si'),dano=habs.filter(h=>!h.alvo&&!h.ef&&!h.cura).sort((a,b)=>calcDano(m,b)-calcDano(m,a));
+  const maisFerido=[...alvos].sort((a,b)=>a.vida/a.vidaMax-b.vida/b.vidaMax)[0],maisPerigoso=[...alvos].sort((a,b)=>genDptHero(b)-genDptHero(a))[0];
+  const curaH=esp.find(h=>h.cura),buffH=esp.find(h=>!h.cura),melhor=dano[0]||efe[0];
+  const R=(h,alvo,motivo)=>({h,alvo:alvo||alvos[0],motivo});
+  const fim=()=>dano[0]&&alvos.find(a=>a.vida<=calcDano(m,dano[0]));
+  if(dif==='Fácil')return R((n%2&&melhor)?melhor:null,alvos[0],'Previsível: sempre no primeiro herói.');
+  if(dif==='Médio'){
+    if(pct<.4&&(curaH||buffH))return R(curaH||buffH,null,'Vida baixa: se protege.');
+    if(n%2===1&&area[0]&&alvos.length>=3)return R(area[0],alvos[0],'Muitos heróis: ataque em área.');
+    if(n%2===1&&(efe[0]||melhor))return R(efe[0]||melhor,maisFerido,'Alterna: ataque especial no herói mais ferido.');
+    return R(melhor||null,maisFerido,'Golpe normal no herói mais ferido.');
+  }
+  if(dif==='Difícil'){
+    if(pct<.35&&curaH)return R(curaH,null,'Vida crítica: se regenera.');
+    if(alvos.length>=2&&area[0]&&n%2===0)return R(area[0],alvos[0],'Vários heróis: ataque em área.');
+    if(n===0&&efe[0])return R(efe[0],maisPerigoso,'Abre enfraquecendo o herói mais perigoso.');
+    const k=fim();if(k)return R(dano[0],k,'Pode finalizar '+k.nome+'.');
+    return R(melhor||null,maisFerido,'Foca o herói mais ferido.');
+  }
+  const ciclo=n%4;
+  if(fase>=2&&area[0]&&n%2===0)return R(area[0],alvos[0],'Fase '+fase+': pressiona o grupo com ataque em área.');
+  if(ciclo===0&&efe[0])return R(efe[0],maisPerigoso,'Ciclo 1: enfraquece o herói mais perigoso.');
+  if(ciclo===1&&area[0])return R(area[0],alvos[0],'Ciclo 2: ataque em área.');
+  if(ciclo===2){const k=fim();return R(dano[0]||null,k||maisFerido,k?'Ciclo 3: finaliza '+k.nome+'.':'Ciclo 3: golpe forte no herói mais ferido.')}
+  if(ciclo===3&&(buffH||curaH)&&pct<.8)return R(buffH||curaH,null,'Ciclo 4: se fortalece.');
+  return R(area[0]||melhor||null,area[0]?alvos[0]:maisFerido,'Segue o padrão do chefão.');
+}
+function renderSugestao(){
+  const el=$('sugestao');if(!el)return;
+  const m=PAPEL==='mestre'?estado.monstros.find(x=>x.id===VEZ&&x.vida>0):null;
+  const sg=m?monstroSugestao(m):null;
+  if(!sg){el.classList.remove('on');el.innerHTML='';return}
+  const h=sg.h,qm=h&&(h.alvo==='area'?'todos os heróis':(h.alvo==='si'?'em si mesmo':sg.alvo.nome))||sg.alvo.nome;
+  el.innerHTML=`🧠 <b>${esc(m.nome)}</b> <small>(${difNorm(m.dificuldade)}${m.fases&&m.fases.length?' · fase '+(m.faseAtual||1):''})</small> sugere: <b>${h?esc(h.nome):'golpe básico'}</b> em <b>${esc(qm)}</b> <small>— ${esc(sg.motivo)}</small> <button class='btn peq' data-act='monsug' data-id='${m.id}'>▶ Usar sugestão</button>`;
+  el.classList.add('on');
+}
+function monUsarSugestao(id){
+  if(PAPEL!=='mestre')return;
+  const m=estado.monstros.find(x=>x.id===id);if(!m||VEZ!==m.id)return;
+  const sg=monstroSugestao(m);if(!sg)return;
+  selecionar('monstros',m,sg.h);
+  if(sg.h&&ehAuto(sg.h))disparar(null,null);else disparar(sg.alvo,'jogadores');
+}
+/* ---- fases do chefao: ao cair da vida limite ganha dano e uma habilidade exclusiva ---- */
+function monstroFases(){
+  let mud=false;
+  estado.monstros.forEach(m=>{
+    if(!m.fases||!m.fases.length||m.vida<=0)return;
+    m.faseAtual=m.faseAtual||1;
+    const f=m.fases[m.faseAtual-1];if(!f||m.vida/m.vidaMax*100>f.pv)return;
+    m.faseAtual++;mud=true;
+    const mult=f.mult||1.25;m.dano=Math.round((m.dano||0)*mult);(m.habsM||[]).forEach(h=>{h.fixo=Math.round((h.fixo||0)*mult)});
+    (f.habs||[]).forEach((h,i)=>m.habsM.push(monHabInst(h,'f'+m.faseAtual+'_'+i+'_'+Date.now())));
+    logar(`💀 <b>${esc(m.nome)}</b> entrou na <b>${esc(f.nome)}</b>! ${esc(f.txt||'')}`);
+    flutuar(m,'💀 '+f.nome,'#ff6b6b');banner('💀 '+String(f.nome).toUpperCase(),'#ff6b6b');fxTela('rgba(200,0,0,.3)',500);fxShake(10,400);
+  });
+  if(mud)salvar();
+}
 
 /* ======================= LOJA =======================
    estado.lojaItens: [{id,nome,ic,cons?,preco,estoque}] e estado.lojaAberta. O mestre cadastra itens, preco e estoque;
@@ -2334,7 +2786,7 @@ function mochilaHTML(id){
       const qt=PAPEL==='mestre'?`<input class='mq' type='number' value='${it.qtd}' ${at} data-c='qtd'>`:(it.qtd>1?`<b>×${it.qtd}</b>`:'');
       return `<div class='mi eqrow ${on?'on':''}'><span class='mtag' style='font-size:24px'>${d?d.ic:'📦'}</span><div class='eqnome'><b>${esc(d?d.nome:it.nome)}</b><br><small>${esc(eqResumo(d))}</small>${d&&d.desc?`<br><small><i>${esc(d.desc)}</i></small>`:''}</div>${qt}${bt}${PAPEL==='mestre'?`<button class='x' data-act='moremover' data-id='${id}' data-l='${l}' data-i='${i}' title='Remover'>✖</button>`:''}</div>`;
     }
-    return `<div class='mi ${cons?'cons':''}'><span class='mtag'>${cons?(def?def.ic:'🧪'):'📦'}</span><input class='mn' placeholder='Nome' value='${escA(it.nome)}' ${at} data-c='nome'${ro}><input class='mq' type='number' value='${it.qtd}' ${at} data-c='qtd'${ro}><input class='mob' placeholder='Observação' value='${escA(it.obs||'')}' ${at} data-c='obs'>${tipoSel}${cons?`<button class='btn peq' data-act='usaritem' data-id='${id}' data-i='${i}' ${it.qtd>0?'':'disabled'} title='${escA(def?def.desc:'')}'>Usar</button>`:''}<button class='x' data-act='moremover' data-id='${id}' data-l='${l}' data-i='${i}' title='Remover'>✖</button></div>`;
+    return `<div class='mi ${cons?'cons':''}'><span class='mtag'>${cons?(def?def.ic:'🧪'):'📦'}</span><input class='mn' placeholder='Nome' value='${escA(it.nome)}' ${at} data-c='nome'${ro}><input class='mq' type='number' value='${it.qtd}' ${at} data-c='qtd'${ro}><input class='mob' placeholder='Observação' value='${escA(it.obs||'')}' ${at} data-c='obs'>${tipoSel}${cons?`<button class='btn peq' data-act='usaritem' data-id='${id}' data-i='${i}' ${(it.qtd>0&&!(ITEMPEND&&PAPEL==='jogador'))?'':'disabled'} title='${escA(def?def.desc:'')}'>Usar</button>`:''}<button class='x' data-act='moremover' data-id='${id}' data-l='${l}' data-i='${i}' title='Remover'>✖</button></div>`;
   }).join('');
   return `<div class='ficha mochila'><div class='cab'><div class='mini' ${fotoStyle(h)}>${emoji(h,false)}</div><div><b>${esc(h.nome)}</b><br><small>${iconeDe(h)} Nv ${h.nivel||1}${h.espec?' · '+esc(h.espec):''}</small></div></div>
     <div class='mdin'><label>🪙 Dinheiro</label><input type='number' value='${m.din}' data-mo='${id}' data-c='din'></div>
@@ -2347,7 +2799,7 @@ function idMochilaAtual(){
   if(!estado.jogadores.some(p=>p.id===mochSel))mochSel=estado.jogadores.length?estado.jogadores[0].id:null;
   return mochSel;
 }
-function sigMochila(){const id=idMochilaAtual(),hh=estado.jogadores.find(p=>p.id===id)||{};return id+'|'+JSON.stringify([mochilaDe(id),hh.equip,hh.nivel,estado.equipamentos])+'|'+(PAPEL==='mestre'?estado.jogadores.map(p=>p.id+p.nome).join(','):'')}
+function sigMochila(){const id=idMochilaAtual(),hh=estado.jogadores.find(p=>p.id===id)||{};return id+'|'+JSON.stringify([mochilaDe(id),hh.equip,hh.nivel,estado.equipamentos,ITEMPEND])+'|'+(PAPEL==='mestre'?estado.jogadores.map(p=>p.id+p.nome).join(','):'')}
 function renderMochila(force){
   const el=$('mochilaConteudo');if(!el)return;
   const id=idMochilaAtual(),sig=sigMochila();
@@ -2456,6 +2908,13 @@ function onlineAct(a,b){
     case 'testeenviar':enviarTeste();return true;
     case 'testecancelar':$('testeBox').classList.remove('on');return true;
     case 'usaritem':fichaAcao(+b.dataset.id,'usarItem',{i:+b.dataset.i});return true;
+    case 'autitemok':if(PAPEL==='mestre')autItemDecidir(true);return true;
+    case 'autitemno':if(PAPEL==='mestre')autItemDecidir(false);return true;
+    case 'edabrir':edAbrir(b.dataset.t,+b.dataset.id);return true;
+    case 'edsalvar':edSalvar();return true;
+    case 'edfechar':edFechar();return true;
+    case 'edhabadd':if(PAPEL==='mestre'&&edSel&&edSel.habs){edGuardar();edSel.habs.push({nome:'',fixo:5,attr:'',desc:''});edDesenhar()}return true;
+    case 'edhabdel':if(PAPEL==='mestre'&&edSel&&edSel.habs){edGuardar();edSel.habs.splice(+b.dataset.i,1);edDesenhar()}return true;
     case 'darxp':darXPUI();return true;
     case 'daritem':darItemUI();return true;
     case 'lojaadd':lojaAdicionar();return true;
@@ -2471,12 +2930,22 @@ function onlineAct(a,b){
     }
     case 'monnovo':monDraft=monBranco();renderMonstros(true);return true;
     case 'moneditar':{const m=monLista().find(x=>x.id===+b.dataset.id);if(m){monDraft=JSON.parse(JSON.stringify(m));renderMonstros(true)}return true}
-    case 'moncancelar':monDraft=null;renderMonstros(true);return true;
+    case 'moncancelar':monDraft=null;genAberto=false;renderMonstros(true);return true;
     case 'monhabadd':if(monDraft){monDraft.habs.push({nome:'',dano:5,attr:'',desc:''});renderMonstros(true)}return true;
     case 'monhabdel':if(monDraft){monDraft.habs.splice(+b.dataset.i,1);renderMonstros(true)}return true;
     case 'monsalvar':monSalvar();return true;
     case 'monapagar':if(confirm('Excluir este monstro da biblioteca?')){monApagarLib(+b.dataset.id);renderMonstros(true)}return true;
     case 'monarena':monParaArena(+b.dataset.id);return true;
+    case 'genabrir':if(PAPEL==='mestre'){genAberto=true;monDraft=null;renderMonstros(true)}return true;
+    case 'genfechar':genAberto=false;renderMonstros(true);return true;
+    case 'gendif':genDif=b.dataset.d;renderMonstros(true);return true;
+    case 'gensel':genToggle(+b.dataset.id);return true;
+    case 'gengerar':genGerar();return true;
+    case 'genregerar':genRegerar();return true;
+    case 'genconfirmar':genConfirmar();return true;
+    case 'monsug':monUsarSugestao(+b.dataset.id);return true;
+    case 'monfasesdel':if(monDraft){monDraft.fases=[];renderMonstros(true)}return true;
+    case 'monduplicar':{if(PAPEL!=='mestre')return true;const m=monLista().find(x=>x.id===+b.dataset.id);if(m){const c=JSON.parse(JSON.stringify(m));c.id=Date.now();c.nome=(c.nome+' (cópia)').slice(0,30);c.vida=c.vidaMax;monSalvarLib(c);renderMonstros(true);toast('📄 Monstro duplicado!')}return true}
     case 'fichaaba':fichaAba=b.dataset.a;sigMeu='';sigFicha='';renderMeu();renderFichas(true);return true; /* troca a aba da ficha */
     case 'attrmais':{ /* so ESCOLHE o ponto (pendente); fixa ao confirmar */
       const p=estado.jogadores.find(x=>x.id===+b.dataset.id);if(!p)return true;
@@ -2599,6 +3068,7 @@ async function entrarSala(cod){
   }
   FB.ouvirMochilas(SALA,PAPEL==='jogador'?MEUUID:null,aoReceberMochilas,x=>falhaRegras('as mochilas',x));
   iniciarSocial();
+  mapaOuvir();
 }
 
 /* --- mestre: publica o estado e processa os pedidos dos jogadores --- */
@@ -2648,7 +3118,7 @@ async function processarAcao(a){
     const d=a.dados||{},n=v=>Math.max(0,Math.min(9999,parseInt(v)||0)),nome=String(d.nome||'').trim().slice(0,24);
     if(!nome){avisar(a.uid,'Escolha um nome para o herói.');return}
     const foto=/^data:image\/(jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(d.foto||'')&&d.foto.length<60000?d.foto:'';
-    const novoId=Date.now();estado.jogadores.push({id:novoId,nome,foto,nivel:1,xp:0,escolhas:{},distr:{},historico:String(d.historico||'').slice(0,1500),peso:n(d.peso),altura:n(d.altura),espec:String(d.espec||'').slice(0,40),especDesc:String(d.especDesc||'').slice(0,400),vida:VIDA_BASE+VIDA_POR_CON*n(d.con),vidaMax:VIDA_BASE+VIDA_POR_CON*n(d.con),est:ESTAMINA_BASE,estMax:ESTAMINA_BASE,forca:n(d.forca),car:n(d.car),inte:n(d.inte),con:n(d.con),agi:n(d.agi),arena:true,status:[],lado:'E',dono:a.uid,donoNome:nomeJ});salvarMochila(novoId,{din:n(d.din),itens:[],acess:[],notas:''});
+    const novoId=Date.now();estado.jogadores.push({id:novoId,nome,foto,nivel:1,xp:0,estNovo:true,escolhas:{},distr:{},historico:String(d.historico||'').slice(0,1500),peso:n(d.peso),altura:n(d.altura),espec:String(d.espec||'').slice(0,40),especDesc:String(d.especDesc||'').slice(0,400),vida:VIDA_BASE+VIDA_POR_CON*n(d.con),vidaMax:VIDA_BASE+VIDA_POR_CON*n(d.con),est:ESTAMINA_BASE,estMax:ESTAMINA_BASE,forca:n(d.forca),car:n(d.car),inte:n(d.inte),con:n(d.con),agi:n(d.agi),arena:true,status:[],lado:'E',dono:a.uid,donoNome:nomeJ});salvarMochila(novoId,{din:n(d.din),itens:[],acess:[],notas:''});
     logar(`🛡️ ${esc(nome)} entrou na mesa (${esc(nomeJ)}).`);
     salvar();desenhar();return;
   }
@@ -2662,8 +3132,10 @@ async function processarAcao(a){
   }
   const h0=estado.jogadores.find(p=>p.id===a.heroiId&&p.dono===a.uid);
   if(!h0){avisar(a.uid,'Esse herói não é seu.');return}
+  if(a.tipo==='moverToken'){mapaMoverRemoto(h0,a);return}
   if(a.tipo==='teste'){await executarTeste(h0,{rotulo:String(a.rotulo||'Teste de ação').slice(0,40),faces:Math.min(20,Math.max(1,parseInt(a.faces)||20)),doJogador:true,uid:a.uid});return}
   /* Acoes de ficha (pontos, habilidades, itens) nao dependem da vez nem gastam turno. */
+  if(a.tipo==='ficha'&&String(a.acao)==='usarItem'){pedidoItemRecebido(h0,a);return}
   if(a.tipo==='ficha'){const r=executarFicha(h0,String(a.acao),a.args||{},true);if(r.erro)avisar(a.uid,r.erro);else{salvar();desenhar()}return}
   const f=fila();
   if(a.tipo==='pular'){
@@ -2697,13 +3169,15 @@ function aoReceberSala(d){
   const vezAntes=VEZ;
   try{estado=Object.assign(base(),JSON.parse(d.estado))}catch(e){return}
   desenhar();
+  const novoRes=(estado.resumo&&!resumoJa.has(estado.resumo.id))?estado.resumo:null;if(novoRes)resumoJa.add(novoRes.id);
   if(mira&&mira.id!==VEZ)cancelar();
   if(primeiraSnap){
     primeiraSnap=false;ultEv=d.evento?d.evento.id:0;ultAviso=d.aviso?d.aviso.id:0;
     aba(meuHeroi()?'Arena':'Meu');
     return;
   }
-  if(VEZ!==vezAntes)esperando=false;
+  if(VEZ!==vezAntes){esperando=false;if(ITEMPEND)itemPendSet(false)}
+  if(novoRes)mostrarResumo(novoRes);
   [...estado.jogadores,...estado.monstros].forEach(p=>{
     const v=antes[p.id];if(v===undefined)return;
     if(p.vida<v){flutuar(p,'-'+(v-p.vida),'#ff6b6b');anim(p,'tremer')}
@@ -2712,7 +3186,7 @@ function aoReceberSala(d){
   const m=meuHeroi();
   if(m&&VEZ===m.id&&vezAntes!==m.id){toast('🎯 É a sua vez!');somTick()}
   if(d.evento&&d.evento.id>ultEv){ultEv=d.evento.id;if(!d.evento.aguardando)esperando=false;eventoRemoto(d.evento)}
-  if(d.aviso&&d.aviso.id!==ultAviso){ultAviso=d.aviso.id;if(d.aviso.uid===MEUUID){esperando=false;esconderRolar();toast(d.aviso.texto)}}
+  if(d.aviso&&d.aviso.id!==ultAviso){ultAviso=d.aviso.id;if(d.aviso.uid===MEUUID){esperando=false;if(ITEMPEND)itemPendSet(false);esconderRolar();toast(d.aviso.texto)}}
 }
 async function eventoRemoto(ev){
   if(ev.aguardando){
@@ -2726,11 +3200,11 @@ async function eventoRemoto(ev){
   if(ev.semDado){banner(ev.banner,ev.cor);if(ev.som==='cura')somCura();else if(ev.som==='ataque')somAtaque();else somBuff();if(ev.fx)fxPlay(ev.fx);return}
   if(remotoRodando)return;
   remotoRodando=true;
-  await rolar3D(ev.r,ev.faces,ev.quem,ev.dif,ev.bonus||0);
+  await rolar3D(ev.r,ev.faces,ev.quem,ev.dif,ev.bonus||0,ev.car||0,ev.rolo||0);
   $('d20').className=ev.cls||'';
   if(ev.res==='falha')somFalha();
   if(ev.res==='crit')tom(1047,1047,.3,'triangle',.15);
-  await esperar(800);
+  await esperar(2300);
   fecharD();await esperar(300);
   banner(ev.banner,ev.cor);
   if(ev.teste){if(ev.res==='acerto'||ev.res==='crit')somBuff();else somErro()}
@@ -2823,7 +3297,7 @@ function fichaHeroiHTML(p,modo){
   const slotsHab=[1,2,3,4,5].map(n=>{const h=HABILIDADES[(p.escolhas||{})[n]];return h?`<div class='slot' title='${escA(h.nome)} (nível ${n})'>${h.ic}</div>`:`<div class='slot vazio' title='Nível ${n}: ainda sem habilidade'></div>`}).join('');
   const slotsEq=EQ_SLOTS.map(([sl,ic,nm])=>{const d=eqDe((p.equip||{})[sl]);return d?`<div class='slot eq' data-act='eqslot' data-id='${id}' data-slot='${sl}' title='${escA(d.nome)}'>${d.ic}</div>`:`<div class='slot vazio' title='${nm}: vazio'><span class='eqf'>${ic}</span></div>`}).join('');
   /* Atributos com + e − (o − devolve um ponto ja distribuido) */
-  const attrs2=ATRIBUTOS.map(([k,rot,ic])=>`<div class='at'><span>${ic}</span><span class='an'>${rot}<br><small style='opacity:.75'>${k==='car'?'Sorte: +'+bonusCarisma(p,20)+' nos dados (+1 a cada 5)':k==='con'?'Vida máx. '+p.vidaMax:EFEITO_ATRIB[k]}</small></span>${(p.distr||{})[k]?`<small class='ad'>+${p.distr[k]}</small>`:''}${pend[k]?`<small class='ad' style='color:#c98a00' title='Ainda não confirmado'>+${pend[k]}?</small>`:''}${bonusEq(p,k)?`<small class='ad' style='color:#1f6fb2' title='Bônus de equipamento'>🎽${bonusEq(p,k)>0?'+':''}${bonusEq(p,k)}</small>`:''}<b class='av'>${(p[k]||0)+(pend[k]||0)+bonusEq(p,k)}</b><button class='mais' data-act='attrmais' data-id='${id}' data-a='${k}' ${livres>0?'':'disabled'} title='Escolher 1 ponto (confirme depois)'>+</button></div>`).join('');
+  const attrs2=ATRIBUTOS.map(([k,rot,ic])=>`<div class='at'><span>${ic}</span><span class='an'>${rot}<br><small style='opacity:.75'>${k==='car'?'Sorte: +'+bonusCarisma(p,20)+' nos dados (+1 a cada 10)':k==='con'?'Vida máx. '+p.vidaMax:EFEITO_ATRIB[k]}</small></span>${(p.distr||{})[k]?`<small class='ad'>+${p.distr[k]}</small>`:''}${pend[k]?`<small class='ad' style='color:#c98a00' title='Ainda não confirmado'>+${pend[k]}?</small>`:''}${bonusEq(p,k)?`<small class='ad' style='color:#1f6fb2' title='Bônus de equipamento'>🎽${bonusEq(p,k)>0?'+':''}${bonusEq(p,k)}</small>`:''}<b class='av'>${(p[k]||0)+(pend[k]||0)+bonusEq(p,k)}</b><button class='mais' data-act='attrmais' data-id='${id}' data-a='${k}' ${livres>0?'':'disabled'} title='Escolher 1 ponto (confirme depois)'>+</button></div>`).join('');
   const abas=[['atr','📊 Atributos'],['hab','⚔️ Habilidades'+(pendentes?' •':'')],['id','📖 Identidade']];
   const aba=abas.some(x=>x[0]===fichaAba)?fichaAba:'atr';
   const painelAtr=`<div class='pts ${livres>0?'tem':''}'>✨ Pontos disponíveis: <b>${livres}</b> <small>(${PONTOS_POR_NIVEL} por nível)</small>
@@ -2868,7 +3342,7 @@ function fichaHeroiHTML(p,modo){
 /* ======================= CADASTRO DE HEROI =======================
    Um unico gerador para o formulario do mestre (prefixo 'j') e do jogador (prefixo 'p'), em secoes verticais.
    Vida inicial nao e digitada: vem da Constituicao (VIDA_BASE + VIDA_POR_CON x Con). */
-const EFEITO_ATRIB={forca:'Dano físico',car:'Sorte: +1 nos dados a cada 5 pontos',inte:'Dano mágico',con:'Vida máxima (+10 por ponto)',agi:'Velocidade e precisão'};
+const EFEITO_ATRIB={forca:'Dano físico',car:'Sorte: +1 nos dados a cada 10 pontos',inte:'Dano mágico',con:'Vida máxima (+10 por ponto)',agi:'Velocidade e precisão'};
 const SUF_ATRIB={forca:'For',car:'Car',inte:'Int',con:'Con',agi:'Agi'};
 function previaVida(x){const c=Math.max(0,parseInt(($(x+'Con')||{}).value)||0),e=$(x+'VidaPrev');if(e)e.textContent=VIDA_BASE+VIDA_POR_CON*c}
 function cadHeroiHTML(x,titulo,nivelEd,botao){
@@ -2954,7 +3428,172 @@ async function executarTeste(p,o){
   banner(rr.crit?'⭐ SUCESSO CRÍTICO!':(ok?'✅ SUCESSO!':(rr.falha?'💀 FALHA CRÍTICA!':'❌ FALHOU')),ok?'#7dff7d':(rr.falha?'#ff5555':'#cbb8ff'));
   if(ok)somBuff();else somErro();
   logar(`🎲 ${esc(p.nome)}: <b>${esc(o.rotulo)}</b> ${rr.sem?'(sem rolagem)':`d${rr.faces}: <b>${rr.r}</b>${detalheRolo(rr)} contra ${rr.dif}`} — ${ok?'sucesso':'falhou'}.`);
-  salvar();await esperar(900);desenhar();rolando=false;
+  emitirResumo({tipo:'teste',quem:p.nome,ic:'🎲',hab:o.rotulo,res:rr.sem?'sem':rr.res,dado:rr.sem?null:{r:rr.r,faces:rr.faces,car:rr.car||0,rolo:rr.rolo||0,ef:rr.ef,dif:rr.dif},alvos:[],efeitos:[]});
+  salvar();await esperar(1500);desenhar();rolando=false;
+}
+
+/* ======================= RESUMO DA ACAO (cartoes que ficam na tela) =======================
+   Depois de cada ataque/habilidade/teste aparece um cartao com: habilidade, dado original + bonus, resultado, dano/cura por alvo e
+   efeitos aplicados. Os cartoes empilham (o novo nao apaga o anterior) e somem sozinhos; toque num cartao para fechar.
+   Online: o mestre guarda o resumo em estado.resumo e cada jogador mostra o mesmo cartao na sua tela. */
+const resumoJa=new Set();
+function resumoHTML(R){
+  const teste=R.tipo==='teste',apoio=!!R.apoio;
+  const rot={acerto:teste?'SUCESSO':(apoio?'FUNCIONOU':'ACERTOU'),crit:teste?'SUCESSO CRÍTICO':'CRÍTICO!',erro:(teste||apoio)?'FALHOU':'ERROU',falha:'FALHA CRÍTICA',sem:teste?'SUCESSO':(apoio?'USADA':'SEM ROLAGEM')}[R.res]||'';
+  const d=R.dado;
+  const dado=d?`<div class='rd'>🎲 d${d.faces}: <b>${d.r}</b>${d.car?` +${d.car} Carisma`:''}${d.rolo?` ${d.rolo>0?'+':''}${d.rolo} efeitos`:''}${(d.car||d.rolo)?` = <b>${d.ef}</b>`:''} <small>(dificuldade ${d.dif})</small></div>`:`<div class='rd'>🎲 Sem rolagem</div>`;
+  const cor=t=>/^\+/.test(t)?'#146a36':(/desviou/.test(t)?'#51409a':'#a31616');
+  const al=(R.alvos||[]).map(a=>`<div class='ra'>${esc(a.nome)}: <b style='color:${cor(String(a.txt))}'>${esc(String(a.txt))}</b></div>`).join('');
+  const ef=(R.efeitos||[]).map(e=>`<div class='re'>${e.ic||'✨'} <b>${esc(String(e.nome))}</b> em ${esc(String(e.alvo))}${e.t?` · ${e.t} turno(s)`:''}${e.txt?` · ${esc(String(e.txt))}`:''}</div>`).join('');
+  return `<div class='rt'><span class='ic'>${R.ic||'⚔️'}</span><span>${esc(String(R.hab||'Ação'))}<br><small>${esc(String(R.quem||''))}</small></span><span class='rres'>${rot}</span></div>${dado}${al}${ef}`;
+}
+function resumoFechar(d){if(!d||d._f)return;d._f=1;clearTimeout(d._t);d.classList.add('sai');setTimeout(()=>d.remove(),520)}
+function mostrarResumo(R){
+  const box=$('resumos');if(!box||!R)return;
+  const d=document.createElement('div');d.className='res-card '+(R.res||'');d.innerHTML=resumoHTML(R);d.onclick=()=>resumoFechar(d);
+  box.prepend(d);
+  [...box.children].slice(3).forEach(resumoFechar);
+  const ms=Math.min(15000,6500+1300*((R.alvos||[]).length+(R.efeitos||[]).length));
+  d._t=setTimeout(()=>resumoFechar(d),ms);
+}
+function emitirResumo(RS){const R=Object.assign({id:Date.now()+Math.random()},RS);estado.resumo=R;resumoJa.add(R.id);mostrarResumo(R)}
+
+/* ======================= AUTORIZACAO DE ITENS CONSUMIVEIS =======================
+   Jogador online pede; o mestre aprova ou recusa. So vale na vez do heroi; aprovado => item consumido, efeito aplicado e turno encerrado.
+   Recusado => nada acontece e o jogador segue no turno. Um pedido por heroi de cada vez. */
+let AUTITENS=[],ITEMPEND=false,itemPendT=null;
+const avisarSeOnline=(uid,t)=>{if(ONLINE&&uid)avisar(uid,t)};
+function itemPendSet(v){ITEMPEND=!!v;clearTimeout(itemPendT);if(v)itemPendT=setTimeout(()=>{ITEMPEND=false;sigMoch='';renderMochila(true)},60000);sigMoch='';renderMochila(true)}
+function pedidoItemRecebido(h0,a){
+  const erro=t=>avisarSeOnline(a.uid,t),i=+((a.args||{}).i);
+  if(h0.vida<=0)return erro('Herói caído não pode usar itens.');
+  if(VEZ!==h0.id)return erro('Só dá para usar item consumível no seu turno.');
+  if(AUTITENS.some(x=>x.heroiId===h0.id))return erro('Você já tem um pedido aguardando autorização.');
+  const it=(mochilaDe(h0.id).itens||[])[i];
+  if(!it||it.tipo!=='consumivel'||!(it.qtd>0))return erro('Item indisponível.');
+  const def=CONSUMIVEIS.find(c=>c.id===it.cons);if(!def)return erro('Efeito do item desconhecido.');
+  AUTITENS.push({heroiId:h0.id,uid:a.uid,i,cons:it.cons,nome:it.nome||def.nome,ic:def.ic,desc:def.desc,jogador:h0.nome});
+  tom(660,990,.18,'sine',.1);toast('🧪 '+h0.nome+' pediu para usar '+(it.nome||def.nome));
+  autItemMostrar();
+}
+function autItemMostrar(){
+  const el=$('autItem');if(!el)return;
+  if(!AUTITENS.length){el.classList.remove('on');el.innerHTML='';return}
+  const r=AUTITENS[0],fila=AUTITENS.length-1;
+  el.innerHTML=`<div class='hmcard'><div class='hmtop'><span class='hmic'>${r.ic}</span><div><b class='hmnome'>Autorizar uso de item</b><br><small>${esc(r.jogador)} pediu para usar</small></div></div>
+    <p class='hmdesc'><b>${esc(r.nome)}</b><br><small>Efeito: ${esc(r.desc||'')}</small></p>
+    <div class='hmef'>Se aprovar: o item é consumido, o efeito é aplicado e o turno de ${esc(r.jogador)} termina.${fila?`<br><b>+${fila} pedido(s) na fila</b>`:''}</div>
+    <div class='hmbtns'><button class='btn' data-act='autitemok'>✔ Aprovar</button><button class='btn verm' data-act='autitemno'>✖ Recusar</button></div></div>`;
+  el.classList.add('on');
+}
+function autItemDecidir(ok){
+  const r=AUTITENS.shift();autItemMostrar();if(!r)return;
+  const h=estado.jogadores.find(x=>x.id===r.heroiId);if(!h)return;
+  if(!ok){avisarSeOnline(r.uid,'❌ O mestre recusou o uso de '+r.nome+'. Você continua no seu turno.');logar(`🚫 Mestre recusou o uso de <b>${esc(r.nome)}</b> por ${esc(h.nome)}.`);salvar();desenhar();toast('Pedido recusado.');return}
+  const m=mochilaDe(h.id);
+  let i=(m.itens||[]).findIndex((x,ix)=>ix===r.i&&x.tipo==='consumivel'&&x.cons===r.cons&&x.qtd>0);
+  if(i<0)i=(m.itens||[]).findIndex(x=>x.tipo==='consumivel'&&x.cons===r.cons&&x.qtd>0);
+  if(i<0){toast('O item não está mais na mochila.');avisarSeOnline(r.uid,'O item não está mais na sua mochila.');return}
+  const res=executarFicha(h,'usarItem',{i},false);
+  if(res.erro){toast(res.erro);avisarSeOnline(r.uid,res.erro);return}
+  salvar();desenhar();
+  avisarSeOnline(r.uid,'✅ O mestre aprovou: '+r.nome+' usado. Seu turno terminou.');
+}
+function autitensLimpar(){ /* o turno mudou enquanto o pedido esperava: cancela */
+  if(!AUTITENS.length)return;
+  const manter=AUTITENS.filter(r=>{if(VEZ===r.heroiId)return true;avisarSeOnline(r.uid,'Pedido cancelado: o turno mudou.');return false});
+  if(manter.length!==AUTITENS.length){AUTITENS=manter;autItemMostrar()}
+}
+
+/* ======================= EDITAR FICHA (Biblioteca, so o mestre) =======================
+   Abre a ficha ja cadastrada (heroi ou monstro em jogo) num formulario e grava POR CIMA da mesma ficha (mesmo id): nao cria outra. */
+let edSel=null;
+function edAbrir(t,id){
+  if(PAPEL!=='mestre')return;
+  const p=buscar(t,id);if(!p)return;
+  edSel={t,id,habs:t==='monstros'?JSON.parse(JSON.stringify(p.habsM||[])).map(h=>Object.assign({},h,{fixo:h.fixo||0,attr:h.attr||'',desc:h.desc||''})):null};
+  edDesenhar();
+}
+function edFechar(){edSel=null;const el=$('edFicha');if(el){el.classList.remove('on');el.innerHTML=''}}
+function edColetarHabs(){
+  if(!edSel||!edSel.habs)return;
+  document.querySelectorAll('#edFicha [data-eh]').forEach(e=>{const [i,k]=e.dataset.eh.split(':'),h=edSel.habs[+i];if(h)h[k]=(k==='fixo'||k==='custo')?Math.max(0,parseInt(e.value)||0):e.value});
+}
+/* guarda tudo que ja foi digitado antes de redesenhar o formulario (ao adicionar/remover ataque) */
+function edGuardar(){if(!edSel)return;edColetarHabs();edSel.vals={};document.querySelectorAll('#edFicha [id^="ed"]').forEach(e=>{if(e.id!=='edFicha'&&e.type!=='file')edSel.vals[e.id]=e.value})}
+function edDesenhar(){
+  const el=$('edFicha');if(!el||!edSel)return;
+  const p=buscar(edSel.t,edSel.id);if(!p){edFechar();return}
+  const mon=edSel.t==='monstros';
+  const num=(id,r,v,ex)=>`<div><small>${r}</small><input id='${id}' type='number' value='${+v||0}' ${ex||''}></div>`;
+  const txt=(id,r,v,max)=>`<div><small>${r}</small><input id='${id}' value='${escA(v||'')}' maxlength='${max}'></div>`;
+  let corpo='';
+  if(!mon){
+    const sel=ARVORE.map(e=>{const atual=(p.escolhas||{})[e.nivel]||'',ops=e.opcoes.slice();if(atual&&!ops.includes(atual)&&HABILIDADES[atual])ops.unshift(atual);
+      return `<div><small>Nível ${e.nivel}</small><select id='edH_${e.nivel}'><option value=''>— nenhuma —</option>${ops.map(id=>HABILIDADES[id]?`<option value='${id}' ${id===atual?'selected':''}>${HABILIDADES[id].ic} ${esc(HABILIDADES[id].nome)}</option>`:'').join('')}</select></div>`}).join('');
+    corpo=`<div class='sec'>🪪 Identidade</div>
+      <div class='l'>${txt('edNome','Nome',p.nome,30)}${txt('edIcone','Ícone (emoji)',p.icone,4)}<div><small>Nova foto</small><input id='edFoto' type='file' accept='image/*'></div></div>
+      <div class='l'>${txt('edEspec','Especialização',p.espec,40)}${num('edPeso','Peso (kg)',p.peso)}${num('edAltura','Altura (cm)',p.altura)}</div>
+      <div class='l'><div><small>Descrição da especialização</small><textarea id='edEspecDesc' rows='2' maxlength='300'>${esc(p.especDesc||'')}</textarea></div></div>
+      <div class='l'><div><small>História</small><textarea id='edHist' rows='3' maxlength='1500'>${esc(p.historico||'')}</textarea></div></div>
+      <div class='sec'>⭐ Progressão</div><div class='l'>${num('edNivel','Nível',p.nivel||1,"min='1'")}${num('edXp','XP',p.xp||0,"min='0'")}</div>
+      <div class='sec'>❤️ Vida e estamina</div><div class='l'>${num('edVida','Vida atual',p.vida,"min='0'")}${num('edEst','Estamina atual',p.est,"min='0'")}${num('edEstMax','Estamina máx.',p.estMax||20,"min='1'")}</div>
+      <small>Vida máxima é calculada pela Constituição (hoje ${p.vidaMax}).</small>
+      <div class='sec'>📊 Atributos (valores base, sem equipamentos)</div><div class='cattrs'>${ATRIBUTOS.map(([k,r,ic])=>`<div class='cattr'><b>${ic} ${r}</b><input id='edA_${k}' type='number' min='0' value='${+p[k]||0}'></div>`).join('')}</div>
+      <div class='sec'>⚔️ Habilidades escolhidas</div><div class='l'>${sel}</div>`;
+  }else{
+    const habs=edSel.habs.map((h,i)=>`<div class='mon-hab'>
+      <div><small>Nome do ataque</small><input data-eh='${i}:nome' value='${escA(h.nome||'')}' maxlength='40'></div>
+      <div><small>Dano</small><input type='number' min='0' data-eh='${i}:fixo' value='${+h.fixo||0}'></div>
+      <div><small>Custo ⚡</small><input type='number' min='0' data-eh='${i}:custo' value='${+h.custo||0}'></div>
+      <div><small>Atributo</small><select data-eh='${i}:attr'><option value=''>— nenhum —</option>${[['forca','Força'],['inte','Inteligência'],['agi','Agilidade']].map(([k,r])=>`<option value='${k}' ${h.attr===k?'selected':''}>${r}</option>`).join('')}</select></div>
+      <button class='btn peq verm' data-act='edhabdel' data-i='${i}' title='Remover ataque'>✖</button>
+      <div class='d'><small>Descrição</small><input data-eh='${i}:desc' value='${escA(h.desc||'')}' maxlength='160'></div></div>`).join('')||`<div class='dica'>Nenhum ataque cadastrado: usa só o ataque básico.</div>`;
+    corpo=`<div class='sec'>🪪 Identidade</div>
+      <div class='l'>${txt('edNome','Nome',p.nome,30)}<div><small>Nova foto</small><input id='edFoto' type='file' accept='image/*'></div></div>
+      <div class='l'>${num('edNivel','Nível',p.nivel||1,"min='1'")}<div><small>Dificuldade</small><select id='edDif'>${DIFICULDADES.map(d=>`<option ${p.dificuldade===d?'selected':''}>${d}</option>`).join('')}</select></div></div>
+      <div class='l'><div><small>Descrição</small><textarea id='edDesc' rows='2' maxlength='400'>${esc(p.descricao||'')}</textarea></div></div>
+      <div class='sec'>❤️ Vida</div><div class='l'>${num('edVidaMax','Vida máxima',p.vidaMax,"min='1'")}${num('edVida','Vida atual',p.vida,"min='0'")}${num('edEstMax','Estamina máx. (0 = sem)',p.estMax||0,"min='0'")}</div>
+      <div class='sec'>📊 Atributos</div><div class='cattrs'>${MON_ATTRS.map(([k,r])=>`<div class='cattr'><b>${r}</b><input id='edA_${k}' type='number' min='0' value='${+p[k]||0}'></div>`).join('')}</div>
+      <div class='sec'>⚔️ Ataques e habilidades</div><div class='l'>${num('edDano','Ataque básico (dano)',p.dano,"min='0'")}</div>${habs}
+      <button class='btn azul' data-act='edhabadd'>➕ Adicionar ataque</button>`;
+  }
+  el.innerHTML=`<div class='edfundo' data-act='edfechar'></div><div class='edcard'><div class='form cad'><div class='ctopo'><b>✏️ Editar ${mon?'monstro':'herói'}: ${esc(p.nome)}</b><small>As mudanças valem para esta ficha (não cria outra)</small></div>${corpo}
+    <p><button class='btn' data-act='edsalvar'>💾 Salvar alterações</button> <button class='btn verm' data-act='edfechar'>Cancelar</button></p></div></div>`;
+  el.classList.add('on');
+  Object.entries(edSel.vals||{}).forEach(([id,v])=>{const e=$(id);if(e&&e.type!=='file')e.value=v});
+}
+function edSalvar(){
+  if(PAPEL!=='mestre'||!edSel)return;
+  const p=buscar(edSel.t,edSel.id);if(!p){edFechar();return}
+  const g=id=>{const e=$(id);return e?e.value:''},n=(id,min)=>Math.max(min||0,parseInt(g(id))||0);
+  const nome=String(g('edNome')).trim().slice(0,30);
+  if(!nome){toast('O nome não pode ficar vazio.');return}
+  edColetarHabs();
+  const f=$('edFoto')&&$('edFoto').files[0];
+  const fim=foto=>{
+    p.nome=nome;if(foto)p.foto=foto;
+    if(edSel.t==='jogadores'){
+      p.icone=String(g('edIcone')).trim().slice(0,4);if(!p.icone)delete p.icone;
+      p.espec=String(g('edEspec')).slice(0,40);p.especDesc=String(g('edEspecDesc')).slice(0,300);p.historico=String(g('edHist')).slice(0,1500);
+      p.peso=n('edPeso');p.altura=n('edAltura');
+      p.nivel=n('edNivel',1);p.xp=Math.min(XP_POR_NIVEL-1,n('edXp'));
+      ATRIBUTOS.forEach(([k])=>{p[k]=n('edA_'+k)});
+      p.estMax=n('edEstMax',1);p.estBase=Math.max(1,p.estMax-ESTAMINA_POR_NIVEL*Math.max(0,p.nivel-1));p.est=Math.min(p.estMax,n('edEst'));
+      p.escolhas=p.escolhas||{};
+      for(let nv=1;nv<=5;nv++){const v=g('edH_'+nv);if(v&&HABILIDADES[v])p.escolhas[nv]=v;else delete p.escolhas[nv]}
+      normalizarHeroi(p);p.vida=Math.min(p.vidaMax,n('edVida'));
+    }else{
+      p.descricao=String(g('edDesc')).slice(0,400);p.nivel=n('edNivel',1);p.dificuldade=g('edDif')||p.dificuldade;
+      p.vidaMax=n('edVidaMax',1);p.vida=Math.min(p.vidaMax,n('edVida'));p.dano=n('edDano');
+      MON_ATTRS.forEach(([k])=>{p[k]=n('edA_'+k)});
+      const t=Date.now();
+      p.habsM=edSel.habs.filter(h=>String(h.nome||'').trim()).map((h,i)=>Object.assign({},h,{id:h.id||('m'+t+'_'+i),nome:String(h.nome).trim().slice(0,40),ic:h.ic||'🗡️',custo:Math.max(0,+h.custo||0),fixo:Math.max(0,+h.fixo||0),attr:h.attr||undefined,f:h.attr?{[h.attr]:.5}:{},desc:String(h.desc||'').slice(0,160)}));
+      const em=n('edEstMax');if(em){p.estMax=em;p.est=Math.min(p.est===undefined?em:p.est,em)}else{delete p.estMax;delete p.est}
+    }
+    edFechar();salvar();desenhar();renderFichas(true);renderMochila(true);toast('💾 Ficha atualizada!');
+  };
+  if(f)lerFoto('edFoto').then(fim);else fim('');
 }
 
 /* ---------- brasas no fundo ---------- */
@@ -2974,6 +3613,226 @@ function loop(){
   requestAnimationFrame(loop);
 }
 loop();
+
+/* ======================= MAPA (aba Mapa: imagem de fundo + tokens arrastaveis) =======================
+   - Posicao dos tokens: estado.mapa.tokens [{tid,t:'jogadores'|'monstros',id,x,y}] com x,y de 0 a 1 (vai junto com o estado).
+   - Imagem: fica FORA do estado (offline: localStorage proprio; online: documento salas/<sala>/mapa/atual), reduzida e comprimida.
+   - Jogador so move o token do proprio heroi (envia 'moverToken' ao soltar); mestre move todos. */
+const MAPA_KEY='mesaRPG_mapaimg';
+let MAPAIMG={src:'',ar:1.6},mapaAjustando=false,mapaSel=null,mapaDrag=null,mapaPend={},mapaImgAtual=null;
+try{const s=localStorage.getItem(MAPA_KEY);if(s){const o=JSON.parse(s);if(o&&o.src)MAPAIMG={src:o.src,ar:o.ar||1.6}}}catch(e){}
+const mapaTokens=()=>{estado.mapa=estado.mapa||{tokens:[]};estado.mapa.tokens=estado.mapa.tokens||[];return estado.mapa.tokens};
+function mapaPode(t){
+  if(PAPEL==='mestre')return true;
+  if(t.t!=='jogadores')return false;
+  const p=buscar('jogadores',t.id);return !!p&&p.dono===MEUUID;
+}
+function mapaNome(t,lista){
+  const p=buscar(t.t,t.id);if(!p)return '';
+  let n=1;for(const o of lista){if(o===t)break;if(o.t===t.t&&o.id===t.id)n++}
+  return p.nome+(n>1?' '+n:'');
+}
+function mapaRender(){
+  const pn=$('painelMapa');if(!pn||!pn.classList.contains('ativo'))return;
+  if(mapaDrag||mapaAjustando)return;
+  const st=$('mapaStage'),im=$('mapaImg'),lista=mapaTokens();
+  const mm=estado.mapa||{};
+  if(mm.fw){st.style.width=(mm.fw*100)+'%';st.style.margin='0';st.style.setProperty('--ar',mm.fa||MAPAIMG.ar||1.6)}
+  else{st.style.width='';st.style.margin='';st.style.setProperty('--ar',MAPAIMG.src?MAPAIMG.ar:1.6)}
+  st.classList.toggle('vazio',!MAPAIMG.src);
+  if(mapaImgAtual!==MAPAIMG.src){
+    mapaImgAtual=MAPAIMG.src;
+    if(MAPAIMG.src){im.src=MAPAIMG.src;im.style.display=''}else{im.removeAttribute('src');im.style.display='none'}
+  }
+  $('mapaVazio').textContent=PAPEL==='jogador'?'O mestre ainda não escolheu o mapa.':'Toque em “Trocar mapa” para escolher a imagem de fundo.';
+  $('mapaDica').textContent=PAPEL==='jogador'?'Arraste o token do seu herói para se mover.':'Arraste um token para mover. Passe o mouse (ou toque) num token para tirá-lo do mapa.';
+  const agora=Date.now();
+  $('mapaTokens').innerHTML=lista.map(t=>{
+    const p=buscar(t.t,t.id);if(!p)return '';
+    const mon=t.t==='monstros';
+    if(PAPEL==='jogador'&&mon&&temEf(p,'oculto'))return '';
+    let x=t.x,y=t.y;const pd=mapaPend[t.tid];
+    if(pd){
+      if(agora-pd.ts>4000||(Math.abs(t.x-pd.x)<.003&&Math.abs(t.y-pd.y)<.003))delete mapaPend[t.tid];
+      else{x=pd.x;y=pd.y}
+    }
+    const pode=mapaPode(t),s=Math.min(3,Math.max(.5,+t.s||1)),ctl=mapaSel===t.tid&&PAPEL!=='jogador';
+    return `<div class='mtk ${mon?'mon':'her'} ${ctl&&y>.72?'ctl-acima':''} ${p.vida<=0?'morto':''} ${p.id===VEZ?'vez':''} ${pode?'mov':''} ${mapaSel===t.tid?'sel':''}' data-tid='${t.tid}' style='left:${(x*100).toFixed(2)}%;top:${(y*100).toFixed(2)}%;--s:${s}'>`+
+      `<button class='mtk-x so-mestre' data-mapa-x='${t.tid}' title='Tirar do mapa' aria-label='Tirar do mapa'>✕</button>`+
+      `<div class='mf' ${fotoStyle(p)}>${emoji(p,mon)}</div><div class='mn'>${esc(mapaNome(t,lista))}</div>`+
+      (ctl?`<div class='mtk-tam so-mestre'><i class='a'></i><input type='range' min='50' max='300' step='5' value='${Math.round(s*100)}' data-mapa-tam='${t.tid}'><i class='b'></i></div>`:'')+`</div>`;
+  }).join('');
+}
+function mapaMoverRemoto(h0,a){
+  const t=mapaTokens().find(o=>o.tid===a.tid&&o.t==='jogadores'&&o.id===h0.id);
+  if(!t)return;
+  const x=+a.x,y=+a.y;if(!isFinite(x)||!isFinite(y))return;
+  t.x=Math.min(1,Math.max(0,x));t.y=Math.min(1,Math.max(0,y));
+  salvar();mapaRender();
+}
+/* arrastar */
+(function(){
+  const box=$('mapaTokens');
+  box.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.mtk-tam')){mapaAjustando=true;return}
+    if(e.target.closest('.mtk-x'))return;
+    const el=e.target.closest('.mtk');if(!el)return;
+    const t=mapaTokens().find(o=>o.tid===el.dataset.tid);if(!t||!mapaPode(t))return;
+    mapaDrag={el,t,sx:e.clientX,sy:e.clientY,mov:false,r:$('mapaStage').getBoundingClientRect(),x:t.x,y:t.y};
+    try{el.setPointerCapture(e.pointerId)}catch(x){}
+    el.classList.add('arrasta');e.preventDefault();
+  });
+  box.addEventListener('pointermove',e=>{
+    const d=mapaDrag;if(!d)return;
+    if(!d.mov&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)>4)d.mov=true;
+    if(!d.mov)return;
+    d.x=Math.min(1,Math.max(0,(e.clientX-d.r.left)/d.r.width));
+    d.y=Math.min(1,Math.max(0,(e.clientY-d.r.top)/d.r.height));
+    d.el.style.left=(d.x*100).toFixed(2)+'%';d.el.style.top=(d.y*100).toFixed(2)+'%';
+  });
+  const fim=e=>{
+    const d=mapaDrag;if(!d)return;
+    mapaDrag=null;d.el.classList.remove('arrasta');
+    if(e.type==='pointercancel'){mapaRender();return}
+    if(!d.mov){ if(PAPEL!=='jogador')mapaSel=d.t.tid; mapaRender();return }
+    d.t.x=d.x;d.t.y=d.y;
+    if(PAPEL==='mestre')salvar();
+    else{mapaPend[d.t.tid]={x:d.x,y:d.y,ts:Date.now()};enviar({tipo:'moverToken',heroiId:d.t.id,tid:d.t.tid,x:d.x,y:d.y},true)}
+    mapaRender();
+  };
+  box.addEventListener('pointerup',fim);box.addEventListener('pointercancel',fim);
+  box.addEventListener('input',e=>{
+    const k=e.target.dataset&&e.target.dataset.mapaTam;if(!k)return;
+    const tk=mapaTokens().find(o=>o.tid===k);if(!tk)return;
+    tk.s=(+e.target.value)/100;
+    const el=e.target.closest('.mtk');if(el)el.style.setProperty('--s',tk.s);
+  });
+  box.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.mapaTam)salvar()});
+  document.addEventListener('pointerup',()=>{if(mapaAjustando)setTimeout(()=>{mapaAjustando=false;mapaRender()},0)});
+  document.addEventListener('pointerdown',e=>{if(mapaSel&&!e.target.closest('.mtk')){mapaSel=null;mapaRender()}});
+})();
+/* redimensionar o mapa pelas bordas (so o mestre): direita e baixo esticam, canto mantem a proporcao */
+(function(){
+  const st=$('mapaStage');let rz=null;
+  st.addEventListener('pointerdown',e=>{
+    const h=e.target.closest('.mapa-h');if(!h||PAPEL==='jogador')return;
+    const pad=st.parentElement,cs=getComputedStyle(pad);
+    const C=pad.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    rz={m:h.dataset.h,sx:e.clientX,sy:e.clientY,W:st.offsetWidth,H:st.offsetHeight,C,fw:0,fa:0};
+    mapaAjustando=true;st.classList.add('redim');
+    try{h.setPointerCapture(e.pointerId)}catch(x){}
+    e.preventDefault();e.stopPropagation();
+  });
+  st.addEventListener('pointermove',e=>{
+    const r=rz;if(!r)return;
+    const dx=e.clientX-r.sx,dy=e.clientY-r.sy,cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+    let W=r.W,H=r.H;
+    if(r.m==='r')W=cl(r.W+dx,.3*r.C,r.C);
+    else if(r.m==='b')H=cl(r.H+dy,r.W/4,r.W/.4);
+    else{const s=1+(dx*r.W+dy*r.H)/(r.W*r.W+r.H*r.H);W=cl(r.W*s,.3*r.C,r.C);H=W*r.H/r.W}
+    r.fw=W/r.C;r.fa=cl(W/H,.4,4);
+    st.style.width=(r.fw*100)+'%';st.style.margin='0';st.style.setProperty('--ar',r.fa);
+  });
+  const fim=()=>{
+    const r=rz;if(!r)return;rz=null;st.classList.remove('redim');
+    if(r.fw){mapaTokens();estado.mapa.fw=+r.fw.toFixed(4);estado.mapa.fa=+r.fa.toFixed(4);salvar()}
+  };
+  st.addEventListener('pointerup',fim);st.addEventListener('pointercancel',fim);
+})();
+/* botoes do mestre */
+function mapaAddHTML(){
+  const lista=mapaTokens();
+  const chip=(p,tipo)=>{
+    const mon=tipo==='monstros',n=lista.filter(o=>o.t===tipo&&o.id===p.id).length,off=!mon&&n>0;
+    return `<button class='mchip ${mon?'mon':''} ${off?'off':''}' data-mapa-add='${tipo}:${p.id}'><span class='mf' ${fotoStyle(p)}>${emoji(p,mon)}</span><span><b>${esc(p.nome)}</b><small>${off?'no mapa':'+ colocar'+(n?` (${n} no mapa)`:'')}</small></span></button>`;
+  };
+  const vazio=t=>`<div class='vazio'>${t}</div>`;
+  return `<h3>Colocar no mapa</h3><div class='msec'>Heróis cadastrados</div><div class='mgrid'>${estado.jogadores.map(p=>chip(p,'jogadores')).join('')||vazio('Nenhum herói cadastrado.')}</div>`+
+    `<div class='msec'>Monstros da biblioteca</div><div class='mgrid'>${estado.monstros.map(p=>chip(p,'monstros')).join('')||vazio('Nenhum monstro cadastrado. Crie na aba 👹 Monstros ou em Cadastrar.')}</div>`+
+    `<p class='mdica'>Toque no nome: o token aparece no centro do mapa e você arrasta até o lugar. Monstro pode entrar várias vezes (Jorge, Jorge 2...).</p><button class='btn peq azul' data-mapa-fechar='1'>Fechar</button>`;
+}
+function mapaAbrirAdd(){$('mapaAddBox').innerHTML=mapaAddHTML();$('mapaAdd').style.display='flex'}
+$('painelMapa').addEventListener('click',e=>{
+  if(PAPEL==='jogador')return;
+  const x=e.target.closest('[data-mapa-x]');
+  if(x){estado.mapa.tokens=mapaTokens().filter(o=>o.tid!==x.dataset.mapaX);mapaSel=null;salvar();mapaRender();return}
+  const b=e.target.closest('[data-mapa]');if(!b)return;
+  const a=b.dataset.mapa;
+  if(a==='trocar')$('mapaFile').click();
+  else if(a==='colocar')mapaAbrirAdd();
+  else if(a==='limpar'){if(!mapaTokens().length){toast('Não há tokens no mapa.');return}if(!confirm('Tirar todos os tokens do mapa? (A imagem continua e ninguém é apagado da biblioteca.)'))return;estado.mapa.tokens=[];mapaSel=null;salvar();mapaRender()}
+});
+$('mapaAdd').addEventListener('click',e=>{
+  if(PAPEL==='jogador')return;
+  if(e.target===$('mapaAdd')||e.target.closest('[data-mapa-fechar]')){$('mapaAdd').style.display='none';return}
+  const b=e.target.closest('[data-mapa-add]');if(!b||b.classList.contains('off'))return;
+  const [tipo,id]=b.dataset.mapaAdd.split(':'),p=buscar(tipo,+id);if(!p)return;
+  const lista=mapaTokens(),n=lista.length;
+  lista.push({tid:'k'+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36),t:tipo,id:p.id,x:Math.min(.9,.5+((n%5)-2)*.1),y:Math.min(.9,.5+((Math.floor(n/5)%3)-1)*.13)});
+  salvar();mapaRender();$('mapaAddBox').innerHTML=mapaAddHTML();toast(p.nome+' entrou no mapa.');
+});
+/* imagem: reduz e comprime para caber no armazenamento */
+function mapaComprimir(f){
+  return new Promise((res,rej)=>{
+    const rd=new FileReader();rd.onerror=rej;
+    rd.onload=ev=>{
+      const img=new Image();img.onerror=rej;
+      img.onload=()=>{
+        let lado=1400,q=.82,src='',w=1,h=1;
+        for(let i=0;i<10;i++){
+          const k=Math.min(1,lado/Math.max(img.width,img.height));
+          w=Math.max(1,Math.round(img.width*k));h=Math.max(1,Math.round(img.height*k));
+          const c=document.createElement('canvas');c.width=w;c.height=h;
+          const g=c.getContext('2d');g.fillStyle='#10131a';g.fillRect(0,0,w,h);g.drawImage(img,0,0,w,h);
+          src=c.toDataURL('image/jpeg',q);
+          if(src.length<=550000)break;
+          q-=.08;if(q<.5){q=.72;lado*=.8}
+        }
+        res({src,ar:w/h});
+      };
+      img.src=ev.target.result;
+    };
+    rd.readAsDataURL(f);
+  });
+}
+$('mapaFile').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';
+  if(!f||PAPEL==='jogador')return;
+  toast('Preparando o mapa...');
+  try{const r=await mapaComprimir(f);mapaDefinir(r.src,r.ar);toast('Mapa atualizado.')}
+  catch(x){toast('Não consegui abrir essa imagem.')}
+});
+function mapaDefinir(src,ar){
+  MAPAIMG={src,ar};
+  if(PAPEL!=='jogador'){mapaTokens();delete estado.mapa.fw;delete estado.mapa.fa;salvar()}
+  if(ONLINE){if(PAPEL==='mestre')FB.salvarMapa(SALA,{src,ar,v:Date.now()}).catch(mapaFalha)}
+  else{
+    try{if(src)localStorage.setItem(MAPA_KEY,JSON.stringify(MAPAIMG));else localStorage.removeItem(MAPA_KEY)}
+    catch(e){toast('Memória cheia: a imagem do mapa não ficou salva neste aparelho.')}
+  }
+  mapaRender();
+}
+function mapaLimparTudo(){
+  MAPAIMG={src:'',ar:1.6};mapaSel=null;mapaPend={};
+  try{localStorage.removeItem(MAPA_KEY)}catch(e){}
+  if(ONLINE&&PAPEL==='mestre')FB.salvarMapa(SALA,{src:'',ar:1.6,v:Date.now()}).catch(mapaFalha);
+}
+function mapaOuvir(){
+  FB.ouvirMapa(SALA,d=>{
+    if(d&&d.src!==undefined)MAPAIMG={src:d.src||'',ar:d.ar||1.6};
+    else if(PAPEL==='mestre'&&MAPAIMG.src)FB.salvarMapa(SALA,{src:MAPAIMG.src,ar:MAPAIMG.ar,v:Date.now()}).catch(mapaFalha);
+    mapaRender();
+  },mapaFalha);
+}
+function mapaFalha(x){
+  if(!x||x.code!=='permission-denied'){toast(erroPT(x));return}
+  if(regrasAvisadas.mapa)return;regrasAvisadas.mapa=1;
+  const b=$('avisoRegras');
+  b.innerHTML=(PAPEL==='mestre'
+    ?`⚠️ Para o <b>mapa</b> funcionar online, adicione esta regra no Firebase (<b>Firestore Database → Regras</b>), logo antes da última chave de fechamento, e clique em <b>Publicar</b>: <code>match /salas/{sala}/mapa/{doc} { allow read: if request.auth != null; allow write: if request.auth != null && get(/databases/$(database)/documents/salas/$(sala)).data.mestre == request.auth.uid; }</code> Depois recarregue esta página.`
+    :`⚠️ O mapa ainda não está liberado no banco. Avise o mestre: as regras do Firestore precisam ser atualizadas.`)+` <button class='btn peq' data-act='fecharaviso'>OK</button>`;
+  b.classList.add('on');
+}
 
 /* ---------- inicio ---------- */
 $('dado_sel').innerHTML=Array.from({length:20},(_,i)=>`<option value='${20-i}'>d${20-i}</option>`).join('');
@@ -3014,6 +3873,8 @@ window.FB={
   lerSala:async cod=>{const d=await getDoc(doc(db,'salas',cod));return d.exists()?d.data():null},
   criarSala:(cod,dados)=>setDoc(doc(db,'salas',cod),dados),
   salvarSala:(cod,dados)=>updateDoc(doc(db,'salas',cod),dados),
+  salvarMapa:(cod,d)=>setDoc(doc(db,'salas',cod,'mapa','atual'),d),
+  ouvirMapa:(cod,cb,erro)=>onSnapshot(doc(db,'salas',cod,'mapa','atual'),d=>cb(d.exists()?d.data():null),erro),
   ouvirSala:(cod,cb,erro)=>onSnapshot(doc(db,'salas',cod),d=>cb(d.exists()?d.data():null),erro),
   enviarAcao:(cod,a)=>addDoc(collection(db,'salas',cod,'acoes'),a),
   ouvirAcoes:(cod,cb)=>onSnapshot(collection(db,'salas',cod,'acoes'),s=>s.docChanges().forEach(c=>{if(c.type==='added')cb(c.doc.id,c.doc.data())})),
